@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "152811532061",
+    "firebase_url": "https://fir-project-b52cc-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "fir-project-b52cc",
+    "storage_bucket": "fir-project-b52cc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:152811532061:android:2a846e9bb243a75a867bf4",
+        "android_client_info": {
+          "package_name": "com.example.belikek"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYL8sGeeBu8Xe01ZP38Duovt0ui4a4ROM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
