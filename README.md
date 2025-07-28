@@ -26,12 +26,16 @@ https://picsvg.com
 **#Cara 2**
 1. dekat figma, right click icon yg kau nak, tekan flatten
 <img width="334" height="388" alt="image" src="https://github.com/user-attachments/assets/0cf7afdc-8f0c-40e4-a39c-fdf2ecbd8594" />
+
 2. make sure icon tu, nnt jadi bertulang mcm ni
 (atas sebelum, bawah selepas flatten)
 <img width="325" height="332" alt="image" src="https://github.com/user-attachments/assets/085795c3-b51d-4332-8ff4-bcf6170fae3b" />
+
 <img width="205" height="209" alt="image" src="https://github.com/user-attachments/assets/cdb92838-78f8-4a61-b715-b5e7243a2bf4" />
+
 3. right click lagi sekali icon flatten tu, pastu tekan Copy/Paste as > Copy as SVG
 <img width="623" height="376" alt="image" src="https://github.com/user-attachments/assets/91b22808-8447-4234-b8dc-2b378e08ca97" />
+
 4. pastu bukak VS Code, buat new file, paste code SVG tu, then save as .svg, nnt dia jd cmni
 <img width="261" height="279" alt="image" src="https://github.com/user-attachments/assets/14b98ff3-42ea-4eaa-93f6-0c7f7f7222d2" />
 
