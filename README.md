@@ -19,7 +19,9 @@ https://picsvg.com
 7. adjust size ikut kesesuaian
 8. setel
 <img width="801" height="644" alt="image" src="https://github.com/user-attachments/assets/38f9edc8-95cd-43ff-a0fd-b9411e66f57f" />
+
 9. nnt dia akan create xml file icon tersebut
+
 
 **#Cara 2**
 1. dekat figma, right click icon yg kau nak, tekan flatten
