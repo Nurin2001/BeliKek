@@ -28,7 +28,7 @@ https://picsvg.com
 <img width="334" height="388" alt="image" src="https://github.com/user-attachments/assets/0cf7afdc-8f0c-40e4-a39c-fdf2ecbd8594" />
 
 2. make sure icon tu, nnt jadi bertulang mcm ni
-(atas sebelum, bawah selepas flatten)
+(kiri sebelum, kanan selepas flatten)
 <img width="325" height="332" alt="image" src="https://github.com/user-attachments/assets/085795c3-b51d-4332-8ff4-bcf6170fae3b" />
 
 <img width="205" height="209" alt="image" src="https://github.com/user-attachments/assets/cdb92838-78f8-4a61-b715-b5e7243a2bf4" />
@@ -38,6 +38,8 @@ https://picsvg.com
 
 4. pastu bukak VS Code, buat new file, paste code SVG tu, then save as .svg, nnt dia jd cmni
 <img width="261" height="279" alt="image" src="https://github.com/user-attachments/assets/14b98ff3-42ea-4eaa-93f6-0c7f7f7222d2" />
+
+5. pastu, bukak android studio, buat bnd sama mcm cara 1 dari step 3
 
 
 
