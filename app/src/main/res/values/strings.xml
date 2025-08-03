@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">BeliKek</string>
+    <string name="change_address_underlined"><u>Change</u></string>
 </resources>
