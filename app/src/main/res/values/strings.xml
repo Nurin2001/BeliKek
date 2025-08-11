@@ -1,5 +1,17 @@
 <resources>
     <string name="app_name">BeliKek</string>
     <string name="change_address_underlined"><u>Change</u></string>
+<<<<<<< Updated upstream
     <string name="item_edit_underlined"><u>Edit</u></string>
+=======
+    <string name="belian_balance">Belian Balance</string>
+    <string name="good_morning_mr_anwar">Good Morning, Mr Anwar</string>
+    <string name="price">RM 0.00</string>
+    <string name="easy_order">Easy Order</string>
+    <string name="points">6 / 10</string>
+    <string name="belian_points">Belian Points</string>
+    <string name="_130_pts">130 pts</string>
+    <string name="baby_shark">Baby Shark</string>
+    <string name="fruit_tart">Fruit Tart</string>
+>>>>>>> Stashed changes
 </resources>

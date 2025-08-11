@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    >
+
+    <!-- ScrollView untuk semua content -->
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <!-- Greeting + Profile Icon -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/text_greeting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/good_morning_mr_anwar"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
+
+                <ImageView
+                    android:id="@+id/profile_icon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/profile_icon"
+                    android:background="@drawable/rounded_profile"
+                    android:padding="4dp"/>
+            </RelativeLayout>
+
+            <!-- 3 Kad Balance / Order / Points -->
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center_vertical">
+
+                <!-- Kad 1 -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="80dp"
+                    android:background="@drawable/rounded_card"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:textColor="@color/black"
+                        android:text="@string/belian_balance"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <TextView
+                        android:id="@+id/tvBalance"
+                        android:text="@string/price"
+                        android:textSize="16sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <Space android:layout_width="8dp" android:layout_height="wrap_content"/>
+
+                <!-- Kad 2 -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="80dp"
+                    android:background="@drawable/rounded_card"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:text="@string/easy_order"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <TextView
+                        android:id="@+id/tvEasyOrder"
+                        android:text="@string/points"
+                        android:textSize="16sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <Space android:layout_width="8dp" android:layout_height="wrap_content"/>
+
+                <!-- Kad 3 -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="80dp"
+                    android:background="@drawable/rounded_card"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:text="@string/belian_points"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <TextView
+                        android:id="@+id/tvPoints"
+                        android:text="@string/_130_pts"
+                        android:textSize="16sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Banner Offer Horizontal -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Today's Offer"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"/>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                android:layout_marginTop="8dp">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <!-- Banner 1 -->
+                    <ImageView
+                        android:src="@drawable/baby_shark"
+                        android:layout_width="300dp"
+                        android:layout_height="200dp"
+                        android:scaleType="centerCrop"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginStart="5dp"
+                        android:background="@drawable/rounded_banner"
+                        android:clipToOutline="true"/>
+
+                    <!-- Banner 2 (optional) -->
+                    <ImageView
+                        android:src="@drawable/fruit_tart"
+                        android:layout_width="300dp"
+                        android:layout_height="200dp"
+                        android:scaleType="centerCrop"
+                        android:background="@drawable/rounded_banner"/>
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <!-- Menu Title -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Menu"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginTop="16dp"/>
+
+            <!-- Kek Menu (scroll with page) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="405dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal">
+
+                <!-- Item 1 -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="189dp"
+                    android:layout_marginBottom="12dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/rounded_card"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/baby_shark" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:gravity="center"
+                        android:text="@string/baby_shark"
+                        android:textAlignment="center"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <!-- Item 2 -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="190dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/rounded_card"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/fruit_tart" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="Among Us"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:layout_width="395dp"
+                android:layout_height="43dp"
+                android:background="@color/black" />
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
