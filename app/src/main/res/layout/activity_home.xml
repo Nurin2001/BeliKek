@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HomeActivity">
+
+  <!-- ScrollView untuk semua content -->
+  <ScrollView
+      android:id="@+id/scrollView"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:fillViewport="true"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+      <!-- Greeting + Profile Icon -->
+
+      <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/text_greeting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/good_morning_mr_anwar"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+
+        <ImageView
+            android:id="@+id/profile_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_nav_profile"
+            android:background="@drawable/rounded_profile"
+            android:padding="4dp"/>
+      </RelativeLayout>
+
+      <!-- 3 Kad Balance / Order / Points -->
+      <LinearLayout
+          android:orientation="horizontal"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="12dp"
+          android:gravity="center_vertical">
+
+        <!-- Kad 1 -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="80dp"
+            android:background="@drawable/rounded_card"
+            android:orientation="vertical"
+            android:gravity="center">
+
+          <TextView
+              android:textColor="@color/black"
+              android:text="@string/belian_balance"
+              android:textSize="14sp"
+              android:textStyle="bold"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"/>
+          <TextView
+              android:id="@+id/tvBalance"
+              android:text="@string/price"
+              android:textSize="16sp"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <Space android:layout_width="8dp" android:layout_height="wrap_content"/>
+
+        <!-- Kad 2 -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="80dp"
+            android:background="@drawable/rounded_card"
+            android:orientation="vertical"
+            android:gravity="center">
+
+          <TextView
+              android:text="@string/easy_order"
+              android:textSize="14sp"
+              android:textStyle="bold"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"/>
+          <TextView
+              android:id="@+id/tvEasyOrder"
+              android:text="@string/points"
+              android:textSize="16sp"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <Space android:layout_width="8dp" android:layout_height="wrap_content"/>
+
+        <!-- Kad 3 -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="80dp"
+            android:background="@drawable/rounded_card"
+            android:orientation="vertical"
+            android:gravity="center">
+
+          <TextView
+              android:text="@string/belian_points"
+              android:textSize="14sp"
+              android:textStyle="bold"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"/>
+          <TextView
+              android:id="@+id/tvPoints"
+              android:text="@string/_130_pts"
+              android:textSize="16sp"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"/>
+        </LinearLayout>
+      </LinearLayout>
+
+
+      <!-- Banner Offer Horizontal -->
+
+      <androidx.constraintlayout.widget.ConstraintLayout
+          android:layout_width="match_parent"
+          android:layout_height="392dp">
+
+        <HorizontalScrollView
+            android:id="@+id/horizontalScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="358dp"
+            android:layout_marginTop="32dp"
+            android:scrollbars="none"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+          <LinearLayout
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal">
+
+            <!-- Banner 1 -->
+
+            <!-- Banner 2 (optional) -->
+            <ImageView
+                android:layout_width="300dp"
+                android:layout_height="334dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/rounded_banner"
+                android:clipToOutline="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/baby_shark" />
+
+            <ImageView
+                android:layout_width="300dp"
+                android:layout_height="334dp"
+                android:background="@drawable/rounded_banner"
+                android:scaleType="centerCrop"
+                android:src="@drawable/fruit_tart" />
+          </LinearLayout>
+        </HorizontalScrollView>
+      </androidx.constraintlayout.widget.ConstraintLayout>
+
+      <!-- Menu Title -->
+
+      <!-- Kek Menu (scroll with page) -->
+      <androidx.constraintlayout.widget.ConstraintLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tvMenuTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Menu"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteY="520dp" />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_line"
+            app:layout_constraintTop_toBottomOf="@+id/tvMenuTitle" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:nestedScrollingEnabled="false"
+            android:overScrollMode="never"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view" />
+
+      </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+  </ScrollView>
+  </androidx.constraintlayout.widget.ConstraintLayout>
