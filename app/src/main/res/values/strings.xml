@@ -2,7 +2,6 @@
     <string name="app_name">BeliKek</string>
     <string name="change_address_underlined"><u>Change</u></string>
     <string name="item_edit_underlined"><u>Edit</u></string>
-    =======
     <string name="belian_balance">Belian Balance</string>
     <string name="good_morning_mr_anwar">Good Morning, Mr Anwar</string>
     <string name="price">RM 0.00</string>
@@ -14,5 +13,4 @@
     <string name="fruit_tart">Fruit Tart</string>
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    >>>>>>> Stashed changes
 </resources>

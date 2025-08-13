@@ -2,27 +2,28 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/menu_item"
-    android:layout_width="250dp"
-    android:layout_height="400dp">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="250dp"
-        android:layout_height="300dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="6dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginBottom="6dp"
         android:background="@drawable/rounded_banner"
         android:clipToOutline="true"
         android:scaleType="centerCrop"
         android:src="@drawable/baby_shark"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <TextView
         android:id="@+id/menuName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="13dp"
         android:text="Baby Shark"
         android:fontFamily="@font/poppins_bold"
         android:textAlignment="center"
@@ -36,7 +37,7 @@
         android:id="@+id/tvPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="2dp"
         android:textSize="16sp"
         android:textAlignment="center"
         android:fontFamily="@font/poppins_medium"
