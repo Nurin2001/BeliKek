@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -19,49 +20,55 @@ public class MainActivity2 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main); // <-- layout yang kau paste tu
+        setContentView(R.layout.activity_main); // pastikan ini layout host yang ada fragment_container + include bottom nav
 
-        // Insets: apply TOP sahaja pada content; jangan tolak bottom (biar bottom nav melekat bawah)
+        // 1) Inset untuk CONTENT (atas sahaja)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.fragment_container), (v, insets) -> {
             Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(bars.left, bars.top, bars.right, /* bottom */ 0);
+            v.setPadding(bars.left, bars.top, bars.right, 0);
+            return insets;
+        });
+
+        // 2) Inset untuk BOTTOM NAV (tambah padding bawah)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.bottom_nav_container), (v, insets) -> {
+            Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), bars.bottom);
             return insets;
         });
 
         bottomNav = findViewById(R.id.bottom_nav); // id dalam bottom_navigation_bar.xml
 
-        // Load fragment awal sekali (Home) hanya kali pertama activity dibuat
+        // 3) Fragment awal
         if (savedInstanceState == null) {
-            replace(new HomeActivity());
-            // set selected state pada bottom nav supaya konsisten
+            replace(new HomeFragment());
             if (bottomNav != null) bottomNav.setSelectedItemId(R.id.home);
         }
 
+        // 4) Handler tab bottom nav
         if (bottomNav != null) {
-            // Bila user pilih tab
             bottomNav.setOnItemSelectedListener(item -> {
                 int id = item.getItemId();
                 if (id == R.id.home) {
                     replace(new HomeFragment());
                     return true;
-                } else if (id == R.id.shorts) { // id "Cake" dalam menu kau
-                    replace(new MenuFragment());
+                } else if (id == R.id.shorts) {           // tab "Cake"
+                    replace(new HomeFragment());           // tukar ke fragment sebenar nanti
                     return true;
-                } else if (id == R.id.subscriptions) { // id "Profile" dalam menu kau
-                    replace(new ProfileFragment());
+                } else if (id == R.id.subscriptions) {     // tab "Profile"
+                    replace(new HomeFragment());        // tukar ke fragment sebenar nanti
                     return true;
                 }
                 return false;
             });
 
-            // Optional: bila reselect tab yang sama, jangan buat apa-apa
             bottomNav.setOnItemReselectedListener(item -> {
-                // no-op
+                // optional: scroll to top/refresh
             });
         }
     }
 
-    private void replace(@NonNull HomeActivity fragment) {
+    // >>> Terima FRAGMENT, bukan HomeFragment sahaja
+    private void replace(@NonNull Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_container, fragment)
