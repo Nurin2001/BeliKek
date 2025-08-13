@@ -1,13 +1,6 @@
 <resources>
     <string name="app_name">BeliKek</string>
     <string name="change_address_underlined"><u>Change</u></string>
-    <
-    <
-    <
-    <
-    <
-    <
-    < Updated upstream
     <string name="item_edit_underlined"><u>Edit</u></string>
     =======
     <string name="belian_balance">Belian Balance</string>
@@ -19,5 +12,7 @@
     <string name="_130_pts">130 pts</string>
     <string name="baby_shark">Baby Shark</string>
     <string name="fruit_tart">Fruit Tart</string>
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
     >>>>>>> Stashed changes
 </resources>
