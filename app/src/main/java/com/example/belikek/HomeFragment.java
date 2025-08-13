@@ -1,6 +1,7 @@
 package com.example.belikek;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,15 +13,19 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class HomeFragment extends Fragment {
+
+    private FirebaseFirestore db;
 
     public HomeFragment() { }
 
@@ -46,17 +51,26 @@ public class HomeFragment extends Fragment {
         });
         rv.setAdapter(adapter);
 
-        // Firestore: ambil dokumen "menu/cartoon" (semua field)
-        FirebaseFirestore.getInstance()
-                .collection("menu")
-                .document("cartoon")
+        // initialize firestore
+        db = FirebaseFirestore.getInstance();
+
+        String categoryId = "cartoon";
+        db.collection("products")
+                .whereEqualTo("category_id", categoryId)
                 .get()
-                .addOnSuccessListener(doc -> {
-                    List<MenuItem> list = mapDocToMenuItems(doc);
-                    // Susun ikut nama dan LIMIT 6
-                    list.sort((a, b) -> a.name.compareToIgnoreCase(b.name));
-                    if (list.size() > 6) list = list.subList(0, 6);
-                    adapter.submit(list);
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            List<MenuItem> list = mapDocToMenuItems(queryDocumentSnapshots);
+                            // Susun ikut nama dan LIMIT 6
+                            list.sort((a, b) -> a.name.compareToIgnoreCase(b.name));
+                            if (list.size() > 6) list = list.subList(0, 6);
+                            adapter.submit(list);
+
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("FirestoreQuery", "Error getting documents", e);
                 });
 
         // "See More" → tukar ke tab Menu (jika btnSeeMore wujud dalam layout)
@@ -68,19 +82,15 @@ public class HomeFragment extends Fragment {
 //        }
     }
 
-    private List<MenuItem> mapDocToMenuItems(@Nullable DocumentSnapshot doc) {
+    private List<MenuItem> mapDocToMenuItems(@Nullable QuerySnapshot queryDocumentSnapshots) {
         List<MenuItem> list = new ArrayList<>();
-        if (doc == null || !doc.exists() || doc.getData() == null) return list;
+        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+            if (documentSnapshot == null || !documentSnapshot.exists() || documentSnapshot.getData() == null) return list;
 
-        for (Map.Entry<String, Object> e : doc.getData().entrySet()) {
-            String id = e.getKey();                     // cth: "baby_shark"
-            String name = String.valueOf(e.getValue()); // cth: "Baby Shark"
-
-            // Default price (boleh sambung dari koleksi lain nanti)
-            double price = 99.00;
-
-            // **Path gambar** ikut konvensyen Storage anda
-            String imagePath = "menu/cartoon/" + id + ".jpg";
+            String id = documentSnapshot.getId();
+            String name = documentSnapshot.getString("name");
+            Double price = documentSnapshot.getDouble("price");
+            String imagePath = documentSnapshot.getString("image_url");
 
             list.add(new MenuItem(id, name, price, imagePath));
         }
