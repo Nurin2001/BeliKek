@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="12dp"
+    android:background="@color/white">
+
+    <!-- ===== Header: Shop Status (view-only) ===== -->
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="Shop Status:"
+        android:textSize="14sp"
+        android:fontFamily="@font/poppins_medium"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/textView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Kotak putih (status + masa) -->
+        <LinearLayout
+            android:id="@+id/divider"
+            android:layout_width="0dp"
+            android:layout_height="43dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_time"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="8dp">
+
+            <!-- Status -->
+            <TextView
+                android:id="@+id/chipStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:fontFamily="@font/poppins_semi_bold"
+                android:gravity="center"
+                android:paddingHorizontal="12dp"
+                android:text="Closed"
+                android:textColor="@android:color/black" />
+
+            <!-- Divider nipis -->
+            <View
+                android:layout_width="1dp"
+                android:layout_height="24dp"
+                android:layout_marginHorizontal="8dp"
+                android:background="@color/thinLine" />
+
+            <!-- Masa – rapat ke hujung kanan dalam kotak -->
+            <TextView
+                android:id="@+id/chipTime"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/poppins_semi_bold"
+                android:gravity="end|center_vertical"
+                android:paddingEnd="8dp"
+                android:text="00:00 P.M"
+                android:textAlignment="viewEnd"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+        <!-- Gap antara kotak & butang -->
+        <Space
+            android:layout_width="8dp"
+            android:layout_height="wrap_content" />
+
+        <!-- Butang ikon -->
+        <ImageView
+            android:id="@+id/btnPickTime"
+            android:layout_width="43dp"
+            android:layout_height="43dp"
+            android:background="@drawable/rounded_time_state"
+            android:padding="6dp"
+            android:src="@drawable/ic_moon" />
+    </LinearLayout>
+
+    <!-- ===== Sidebar kiri: kategori (RecyclerView) ===== -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/panelSidebar"
+        android:layout_width="90dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="12dp"
+        android:background="@drawable/bg_panel"
+        android:elevation="8dp"
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvCategories"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:clipToPadding="false"
+            android:paddingVertical="8dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- ===== Panel kanan: produk (RecyclerView grid 2 kolum) ===== -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/panelProducts"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/bg_panel"
+        android:elevation="8dp"
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/panelSidebar"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvProducts"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:paddingBottom="88dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <include
+            layout="@layout/checkout_bar"
+            android:id="@+id/includeCheckout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

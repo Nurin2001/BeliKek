@@ -11,4 +11,6 @@
     <color name="primaryPink">#E3117E</color>
     <color name="secondaryPink">#F890C6</color>
     <color name="selectedBtnBG">#FFF0F8</color>
+    <color name="thinLine">#E2DFDF</color>
+    <color name="timeBorder">#B8B8B8</color>
 </resources>

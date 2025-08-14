@@ -52,7 +52,7 @@ public class MainActivity2 extends AppCompatActivity {
                     replace(new HomeFragment());
                     return true;
                 } else if (id == R.id.shorts) {           // tab "Cake"
-                    replace(new HomeFragment());           // tukar ke fragment sebenar nanti
+                    replace(new MenuFragment());           // tukar ke fragment sebenar nanti
                     return true;
                 } else if (id == R.id.subscriptions) {     // tab "Profile"
                     replace(new HomeFragment());        // tukar ke fragment sebenar nanti
