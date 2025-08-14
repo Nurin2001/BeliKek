@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/checkoutBar"
+    android:layout_width="wrap_content"
+    android:layout_height="56dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingStart="18dp"
+    android:paddingEnd="8dp"
+    android:background="@drawable/bg_checkout_container"
+    android:elevation="6dp">
+
+    <TextView
+        android:id="@+id/tvTotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="RM99.00"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:textColor="@color/primaryPink"/>
+
+    <Space
+        android:layout_width="16dp"
+        android:layout_height="0dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCheckout"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:text="Check Out"
+        android:textAllCaps="false"
+        android:textStyle="bold"
+        android:layout_gravity="end|center"
+        android:textColor="@android:color/white"
+        app:cornerRadius="20dp"
+        android:background="@drawable/selector_btn_checkout"
+       />
+
+</LinearLayout>
