@@ -106,6 +106,7 @@
             android:layout_margin="42px"
             android:text="Confirm"
             android:background="@drawable/disabled_rounded_btn"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:enabled="false"/>
     </LinearLayout>
 </LinearLayout>

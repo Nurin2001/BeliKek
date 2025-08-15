@@ -1,6 +1,8 @@
 package com.example.belikek;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -30,12 +32,15 @@ public class MainActivity2 extends AppCompatActivity {
         });
 
         // 2) Inset untuk BOTTOM NAV (tambah padding bawah)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.bottom_nav_container), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.bottom_nav), (v, insets) -> {
             Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), bars.bottom);
             return insets;
         });
 
+        // First get the include container, then find the BottomNavigationView inside it
+//        View bottomNavContainer = findViewById(R.id.bottom_nav_container);
+//        bottomNav = bottomNavContainer.findViewById(R.id.bottom_nav);
         bottomNav = findViewById(R.id.bottom_nav); // id dalam bottom_navigation_bar.xml
 
         // 3) Fragment awal
@@ -43,18 +48,20 @@ public class MainActivity2 extends AppCompatActivity {
             replace(new HomeFragment());
             if (bottomNav != null) bottomNav.setSelectedItemId(R.id.home);
         }
-
+Log.d("bottomnav isExist", String.valueOf(bottomNav != null));
         // 4) Handler tab bottom nav
         if (bottomNav != null) {
             bottomNav.setOnItemSelectedListener(item -> {
                 int id = item.getItemId();
-                if (id == R.id.home) {
+                if (id == R.id.home) {// tab "Cake"
                     replace(new HomeFragment());
                     return true;
-                } else if (id == R.id.shorts) {           // tab "Cake"
+                } else if (id == R.id.shorts) {
+                    Log.d("menu tab", "menu tab");
                     replace(new MenuFragment());           // tukar ke fragment sebenar nanti
                     return true;
-                } else if (id == R.id.subscriptions) {     // tab "Profile"
+                } else if (id == R.id.subscriptions) {
+                    Log.d("profile tab", "profile tab");// tab "Cake"
                     replace(new HomeFragment());        // tukar ke fragment sebenar nanti
                     return true;
                 }

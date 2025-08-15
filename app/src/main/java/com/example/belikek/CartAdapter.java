@@ -9,6 +9,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -49,10 +51,21 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         holder.itemName.setText(item.getProduct_name() != null ? item.getProduct_name() : "Product");
         holder.itemPrice.setText("RM" + df.format(item.getTotalEachCake()));
         holder.itemDescription1.setText(item.getCakeBaseDescription());
-        holder.itemDescription2.setText(item.getDecorationsDescription());
-        holder.itemDescription3.setText("");
+        holder.itemDescription2.setText(item.getFillingsDescription());
+        holder.itemDescription3.setText(item.getDecorationsDescription());
         holder.itemQuantity.setText(String.valueOf(item.getQuantity()));
-        holder.itemImage.setImageResource(R.drawable.ic_default_background);
+
+        // Replace 'imageView' with your actual ImageView variable name
+        if (holder.itemImage != null) {
+            Glide.with(holder.itemView.getContext())
+                    .load(item.getImageUrl())
+                    .placeholder(R.drawable.ic_cookies) // Add a placeholder image
+                    .error(R.drawable.ic_cartoon) // Add an error image
+                    .centerCrop()
+                    .into(holder.itemImage);
+        } else {
+            holder.itemImage.setImageResource(R.drawable.ic_default_background);
+        }
 
         // Set click listeners
         holder.itemEdit.setOnClickListener(v -> {
@@ -95,7 +108,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         }
     }
 
-    private void updateCakePrice(int position, long newPrice) {
+    private void updateCakePrice(int position, double newPrice) {
         cartItems.get(position).setTotalEachCake(newPrice);
     }
 

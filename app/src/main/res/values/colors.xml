@@ -13,4 +13,5 @@
     <color name="selectedBtnBG">#FFF0F8</color>
     <color name="thinLine">#E2DFDF</color>
     <color name="timeBorder">#B8B8B8</color>
+    <color name="buyNowBtnText">#766C71</color>
 </resources>

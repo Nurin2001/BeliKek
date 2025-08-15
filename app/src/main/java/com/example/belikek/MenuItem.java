@@ -1,6 +1,11 @@
 package com.example.belikek;
 
-public class MenuItem {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
+public class MenuItem implements Parcelable {
     public String id;        // key Firestore (cth: "baby_shark")
     public String name;      // value Firestore (cth: "Baby Shark")
     public double price;     // harga (boleh set default)
@@ -12,6 +17,39 @@ public class MenuItem {
         this.price = price;
         this.imagePath = imagePath;
     }
+
+    // parcleable constructor
+    protected MenuItem(Parcel in) {
+        id = in.readString();
+        name = in.readString();
+        price = in.readDouble();
+        imagePath = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeDouble(price);
+        dest.writeString(imagePath);
+    }
+
+    public static final Creator<MenuItem> CREATOR = new Creator<MenuItem>() {
+        @Override
+        public MenuItem createFromParcel(Parcel in) {
+            return new MenuItem(in);
+        }
+
+        @Override
+        public MenuItem[] newArray(int size) {
+            return new MenuItem[size];
+        }
+    };
 
     public String getId() {
         return id;

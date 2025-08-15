@@ -1,9 +1,11 @@
 package com.example.belikek;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.webkit.ConsoleMessage;
@@ -16,10 +18,20 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PaymentActivity extends AppCompatActivity {
     private WebView webView;
@@ -36,6 +48,22 @@ public class PaymentActivity extends AppCompatActivity {
         String paymentUrl = getIntent().getStringExtra("payment_url");
         setupWebView();
         webView.loadUrl(paymentUrl);
+
+        // Handle back press using OnBackPressedDispatcher
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Prepare the data to send back
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("status", "done");
+
+                // Set the result
+                setResult(RESULT_OK, resultIntent);
+
+                // Finish the activity
+                finish();
+            }
+        });
     }
 
     private void setupWebView() {
@@ -55,17 +83,34 @@ public class PaymentActivity extends AppCompatActivity {
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
                 progressBar.setVisibility(View.GONE);
+                Log.d("PAYMENT_URL", "Page finished: " + url);
+
+                // Check for ToyyibPay completion URLs
+                if (url.contains("toyyibpay.com") &&
+                        (url.contains("status") || url.contains("receipt") ||
+                                url.contains("transaction") || url.contains("result"))) {
+
+                    // Wait a moment for page to fully load, then check status
+                    new Handler().postDelayed(() -> {
+//                        checkPaymentStatusAndClose();
+                    }, 2000);
+                }
+
+                // Also check page title for completion indicators
+                String title = view.getTitle();
+                if (title != null && (title.contains("Success") || title.contains("Complete") ||
+                        title.contains("Receipt") || title.contains("Transaction"))) {
+                    Log.d("PAYMENT_PAGE", "Completion page detected by title: " + title);
+                    new Handler().postDelayed(() -> {
+//                        checkPaymentStatusAndClose();
+                    }, 1000);
+                }
             }
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 Log.d("PAYMENT_URL", "Loading: " + url);
-
-                if (url.contains("yourapp.com/return")) {
-                    handlePaymentResult(url);
-                    return true;
-                }
-                return false;
+                return false; // Let WebView handle all URLs
             }
 
             @Override
@@ -84,6 +129,7 @@ public class PaymentActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void handlePaymentResult(String url) {
         // Parse the return URL to get payment status

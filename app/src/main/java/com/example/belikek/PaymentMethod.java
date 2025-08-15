@@ -56,6 +56,7 @@ public class PaymentMethod extends AppCompatActivity {
                         resultIntent.putExtra("pay_method", "Online Banking");
                         resultIntent.putExtra("bank_name", selectedBank.getBankName());
                         resultIntent.putExtra("bank_code", selectedBank.getBankCode());
+                        resultIntent.putExtra("transaction_fee", 1.00);
                         break;
                 }
 
@@ -92,6 +93,7 @@ public class PaymentMethod extends AppCompatActivity {
             bankNameTv.setText(bank.getBankName());
             bankNameTv.setVisibility(View.VISIBLE);
             confirmBtn.setBackgroundResource(R.drawable.enabled_rounded_btn);
+            confirmBtn.setEnabled(true);
         });
         bottomSheet.show(getSupportFragmentManager(), "BankSelectionBottomSheet");
     }

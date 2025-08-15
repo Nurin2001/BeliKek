@@ -32,4 +32,10 @@ public interface ToyyibPayAPI {
             @Field("billSplitPaymentArgs") String billSplitPaymentArgs,
             @Field("billPaymentChannel") String billPaymentChannel
     );
+
+    @FormUrlEncoded
+    @POST("getBillTransactions")
+    Call<ResponseBody> getBillStatus(
+            @Field("billCode") String billCode
+    );
 }
