@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/cart_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:fitsSystemWindows="true">
+
+    <!-- FIXED HEADER -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/checkout_nav"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:elevation="5dp"
+        android:background="#FFFFFF">
+
+        <ImageButton
+            android:layout_width="43dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_back"
+            android:background="@null"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="16dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- SCROLLABLE CONTENT (takes remaining space) -->
+    <ScrollView
+        android:id="@+id/cart_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            
+            <ImageView
+                android:id="@+id/detail_cake_img"
+                android:layout_width="185dp"
+                android:layout_height="233dp"
+                android:layout_marginBottom="6dp"
+                android:layout_marginTop="40dp"
+                android:background="@drawable/rounded_banner"
+                android:clipToOutline="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/baby_shark"
+                android:layout_gravity="center"/>
+
+
+            <TextView
+                android:id="@+id/detail_cake_name_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="13dp"
+                android:text="Baby Shark"
+                android:fontFamily="@font/poppins_bold"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:id="@+id/detail_cake_base_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chocolate Moist/Vanilla Sponge/Buttercake"
+                android:textAlignment="center"
+                android:layout_gravity="center"
+                android:fontFamily="@font/poppins_light"/>
+            <TextView
+                android:id="@+id/detail_fillings_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Filling Inside : Chocolate Fudge Decoration"
+                android:textAlignment="center"
+                android:layout_gravity="center"
+                android:fontFamily="@font/poppins_light"/>
+            <TextView
+                android:id="@+id/detail_decoration_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Outside : Buttercream, Topper, Toys"
+                android:textAlignment="center"
+                android:layout_gravity="center"
+                android:fontFamily="@font/poppins_light"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/main_recyclerciew_cake_option"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:paddingHorizontal="25dp" />
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- FIXED FOOTER -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/final_total_display"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:background="#FFFFFF"
+        android:elevation="10dp"
+        android:padding="15dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                android:id="@+id/detail_cake_options_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chocolate Moist, Chocolate Fudge, Toys"
+                android:textSize="14sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/detail_subtotal_tv"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="RM175.50"
+                    android:textColor="#E3117E"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="@id/item_image"
+                    app:layout_constraintEnd_toEndOf="@id/item_edit"
+                    android:gravity="center|end">
+
+                    <!-- Decrease button -->
+                    <ImageButton
+                        android:id="@+id/detail_item_decrease"
+                        android:layout_width="30dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_subtract"
+                        android:contentDescription="Decrease quantity"
+                        android:background="@null"
+                        app:tint="#F890C6"/>
+
+                    <!-- Quantity text -->
+                    <TextView
+                        android:id="@+id/detail_item_quantity"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:text="2"
+                        android:textAlignment="center"
+                        android:textSize="16sp"
+                        android:textColor="#E91E63"
+                        android:textStyle="bold"/>
+
+                    <!-- Increase button -->
+                    <ImageButton
+                        android:id="@+id/detail_item_increase"
+                        android:layout_width="30dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_add"
+                        android:contentDescription="Increase quantity"
+                        android:background="@null"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <Button
+                android:id="@+id/buy_now_btn"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:background="@drawable/disabled_rounded_btn"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="12dp"
+                android:text="Buy Now"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:enabled="false"
+                android:layout_marginRight="10dp"/>
+
+            <Button
+                android:id="@+id/add_to_btn"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:background="@drawable/disabled_rounded_btn"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="12dp"
+                android:text="Add To Cart"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:enabled="false" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

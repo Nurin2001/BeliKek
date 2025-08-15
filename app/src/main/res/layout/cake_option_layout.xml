@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cake_option_recyclerview_layout"
+    android:layout_marginBottom="20dp">
+    <TextView
+        android:id="@+id/cake_option_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="Cake Base"
+        android:fontFamily="@font/poppins_medium"
+        android:textSize="14sp"/>
+
+    <TextView
+        android:id="@+id/no_of_picks_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="10sp"
+        android:text="Pick 1"
+        android:layout_marginStart="10dp"
+        android:fontFamily="@font/poppins_light_italic"
+        app:layout_constraintTop_toTopOf="@id/cake_option_tv"
+        app:layout_constraintStart_toEndOf="@id/cake_option_tv"
+        app:layout_constraintBottom_toBottomOf="@id/cake_option_tv"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cake_option_tv">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/cake_option_detail_recyclerview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

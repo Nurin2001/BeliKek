@@ -46,7 +46,7 @@ public class HomeFragment extends Fragment {
         // Grid 2 kolum
         rv.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
-        MenuAdapter adapter = new MenuAdapter(item -> {
+        MenuAdapter adapter = new MenuAdapter((item, position) -> {
             // TODO: buka detail item (optional)
         });
         rv.setAdapter(adapter);

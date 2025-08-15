@@ -1,37 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/sidebar_category_layout"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="84dp"
-        android:layout_height="84dp"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_gravity="center"
         android:gravity="center"
         android:padding="8dp">
 
     <ImageView
-        android:id="@+id/imgIcon"
+        android:id="@+id/category_icon"
         android:layout_width="28dp"
         android:layout_height="28dp"
-        android:src="@drawable/ic_8in"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_eight_inch_cake"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/primaryPink" />
 
     <TextView
-        android:id="@+id/tvCategory"
+        android:id="@+id/category_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
+        android:fontFamily="@font/poppins_semi_bold"
         android:gravity="center"
         android:text="Cartoon"
-        android:textSize="12sp"
-        android:fontFamily="@font/poppins_semi_bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgIcon" />
+        android:textSize="10sp"
+        app:layout_constraintEnd_toEndOf="@+id/category_icon"
+        app:layout_constraintStart_toStartOf="@+id/category_icon"
+        app:layout_constraintTop_toBottomOf="@+id/category_icon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

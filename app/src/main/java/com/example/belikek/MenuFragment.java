@@ -1,9 +1,12 @@
 package com.example.belikek;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,13 +15,14 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.belikek.ui.CategoryAdapter;
-import com.example.belikek.ui.CategoryUi;
-import com.example.belikek.ui.ProductAdapter;
-import com.example.belikek.ui.ProductUi;
-import com.google.android.material.button.MaterialButton;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,10 +33,15 @@ public class MenuFragment extends Fragment {
 
     private RecyclerView rvCategories, rvProducts;
     private CategoryAdapter categoryAdapter;
-    private ProductAdapter productAdapter;
+    private MenuAdapter menuAdapter;
 
     private TextView chipStatus, chipTime, tvTotal;
-    private MaterialButton btnCheckout;
+    private Button btnCheckout;
+
+    private FirebaseFirestore db;
+
+    private static String FIRESTORE_CATEGORIES = "categories";
+    private List<MenuItem>  menuItems;
 
     public MenuFragment() {}
 
@@ -55,12 +64,15 @@ public class MenuFragment extends Fragment {
     public void onViewCreated(@NonNull View v, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(v, savedInstanceState);
 
+        // initialize firestore
+        db = FirebaseFirestore.getInstance();
+
         // Header
         chipStatus = v.findViewById(R.id.chipStatus);
         chipTime   = v.findViewById(R.id.chipTime);
 
         // Checkout include
-        View checkout = v.findViewById(R.id.includeCheckout);
+        View checkout = v.findViewById(R.id.checkoutBar);
         if (checkout != null) {
             tvTotal = checkout.findViewById(R.id.tvTotal);
             btnCheckout = checkout.findViewById(R.id.btnCheckout);
@@ -77,36 +89,28 @@ public class MenuFragment extends Fragment {
         rvCategories = v.findViewById(R.id.rvCategories);
         rvCategories.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        categoryAdapter = new CategoryAdapter((item, pos) -> {
+        categoryAdapter = new CategoryAdapter(getContext(), (item, pos) -> {
             categoryAdapter.setSelected(pos);
             loadProductsForCategory(item.id); // refresh kanan
         });
         rvCategories.setAdapter(categoryAdapter);
 
-        // Senarai kategori asas (boleh ubah ikut keperluan)
-        List<CategoryUi> cats = Arrays.asList(
-                new CategoryUi("4in", "4In", R.drawable.ic_category_placeholder),
-                new CategoryUi("6in", "6In", R.drawable.ic_category_placeholder),
-                new CategoryUi("8in", "8In", R.drawable.ic_category_placeholder),
-                new CategoryUi("10in","10In",R.drawable.ic_category_placeholder),
-                new CategoryUi("cartoon","Cartoon",R.drawable.ic_category_placeholder),
-                new CategoryUi("pastry","Pastry",R.drawable.ic_category_placeholder),
-                new CategoryUi("bread","Single Bread",R.drawable.ic_category_placeholder),
-                new CategoryUi("cookie","Cookie",R.drawable.ic_category_placeholder)
-        );
-        categoryAdapter.submit(cats);
-        categoryAdapter.setSelected(4); // default pilih "Cartoon"
+        // load category from db on side bar
+        loadCategoriesFromDb();
 
         // Products grid
         rvProducts = v.findViewById(R.id.rvProducts);
         rvProducts.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        productAdapter = new ProductAdapter(item -> {
+        menuAdapter = new MenuAdapter((item, position) -> {
             // TODO: buka ProductDetail
         });
-        rvProducts.setAdapter(productAdapter);
+        rvProducts.setAdapter(menuAdapter);
 
         // Muat produk awal
-        loadProductsForCategory("cartoon");
+        loadProductsForCategory("four-inch-cake");
+
+        setupCategoryAdapterListener();
+        setUpProductAdapterListener();
     }
 
     private void updateShopStatusUI(boolean isOpen, @NonNull String timeText) {
@@ -118,51 +122,141 @@ public class MenuFragment extends Fragment {
         if (tvTotal != null) tvTotal.setText(String.format("RM%.2f", amt));
     }
 
-    /**
-     * Fetch produk dari Firestore ikut struktur:
-     * Collection: menu
-     * Document: <categoryId>
-     * Fields: <productId>: <productName>
-     *
-     * Gambar di Firebase Storage: menu/<categoryId>/<productId>.jpg
-     */
-    private void loadProductsForCategory(@NonNull String categoryId) {
-        FirebaseFirestore.getInstance()
-                .collection("menu")
-                .document(categoryId)
+    private void setupCategoryAdapterListener() {
+        categoryAdapter.setOnCategoryClickListener(new CategoryAdapter.OnCategoryClickListener() {
+            @Override
+            public void onItemClick(CategoryUI item, int position) {
+                loadProductsForCategory(item.getId());
+            }
+        });
+    }
+
+    private void setUpProductAdapterListener() {
+        menuAdapter.setOnMenuClickListener(new MenuAdapter.OnItemClick() {
+            @Override
+            public void onClick(MenuItem item, int position) {
+                // TODO: send product details to menu detail activity
+                Log.d("tekan product", "yes");
+                navigateToMenuDetailsActivity(position);
+            }
+        });
+    }
+
+    private void navigateToMenuDetailsActivity(int position) {
+        // Create your object
+        MenuItem menuItem = menuItems.get(position);
+
+        // Send single object
+        Intent intent = new Intent(getActivity(), MenuDetails.class);
+        intent.putExtra("menu_detail", menuItem);
+
+        // Send multiple objects (ArrayList)
+        ArrayList<MenuItem> menuDetailList = new ArrayList<>();
+        menuDetailList.add(menuItem);
+//        intent.putParcelableArrayListExtra("category_list", menuDetailList);
+
+        startActivity(intent);
+    }
+
+    private void loadCategoriesFromDb() {
+        db.collection(FIRESTORE_CATEGORIES)
+                .orderBy("display_order", Query.Direction.ASCENDING)  // or DESCENDING
                 .get()
-                .addOnSuccessListener(this::bindProductsFromDocument)
-                .addOnFailureListener(e -> {
-                    // TODO: show error
-                    productAdapter.submit(new ArrayList<>());
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            List<CategoryUI> category = new ArrayList<>();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d("Firestore", "Document ID: " + document.getId());
+
+                                // Access individual fields
+                                Long displayOrder = document.getLong("display_order");
+                                String id = document.getString("id");
+//                                String imageUrl = document.getString("image_url");
+                                Boolean isActive = document.getBoolean("is_active");
+                                String name = document.getString("name");
+
+                                category.add(new CategoryUI(id, name));
+                                Log.d("Firestore", "display_order: " + displayOrder);
+                                Log.d("Firestore", "id: " + id);
+//                                Log.d("Firestore", "image_url: " + imageUrl);
+                                Log.d("Firestore", "is_active: " + isActive);
+                                Log.d("Firestore", "name: " + name);
+
+                                // Alternative: Get all data as a Map
+                                Map<String, Object> data = document.getData();
+                                Log.d("Firestore", "All data: " + data.toString());
+                            }
+                            categoryAdapter.submit(category);
+                            categoryAdapter.setSelected(1); // default pilih "4 INCH"
+                        } else {
+                            Log.w("Firestore", "Error getting documents.", task.getException());
+                        }
+                    }
                 });
     }
 
-    private void bindProductsFromDocument(DocumentSnapshot doc) {
-        if (doc == null || doc.getData() == null) {
-            productAdapter.submit(new ArrayList<>());
-            return;
-        }
-        String categoryId = doc.getId();
-        List<ProductUi> list = new ArrayList<>();
-
-        // Doc mengandungi fields: key=productId, value=productName
-        for (Map.Entry<String, Object> e : doc.getData().entrySet()) {
-            String productId = e.getKey();
-            String name = String.valueOf(e.getValue());
-
-            // Andaikan harga belum disimpan → guna default / TODO ambil dari koleksi lain
-            double price = 99.0;
-
-            // Path Storage untuk gambar
-            String storagePath = "menu/" + categoryId + "/" + productId + ".jpg";
-
-            list.add(new ProductUi(productId, name, storagePath, price));
-        }
-
-        // Limit ke 6 item
-        if (list.size() > 6) list = list.subList(0, 6);
-
-        productAdapter.submit(list);
+    private void loadProductsForCategory(@NonNull String categoryId) {
+        db.collection("products")
+                .whereEqualTo("category_id", categoryId)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        menuAdapter.clearData();
+                        menuItems = mapDocToMenuItems(queryDocumentSnapshots);
+                        // Susun ikut nama dan LIMIT 6
+                        menuItems.sort((a, b) -> a.name.compareToIgnoreCase(b.name));
+                        if (menuItems.size() > 6) menuItems = menuItems.subList(0, 6);
+                        menuAdapter.submit(menuItems);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("FirestoreQuery", "Error getting documents", e);
+                });
     }
+
+    private List<MenuItem> mapDocToMenuItems(@Nullable QuerySnapshot queryDocumentSnapshots) {
+        List<MenuItem> list = new ArrayList<>();
+        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+            if (documentSnapshot == null || !documentSnapshot.exists() || documentSnapshot.getData() == null) return list;
+
+            String id = documentSnapshot.getId();
+            String name = documentSnapshot.getString("name");
+            Double price = documentSnapshot.getDouble("price");
+            String imagePath = documentSnapshot.getString("image_url");
+
+            list.add(new MenuItem(id, name, price, imagePath));
+        }
+        return list;
+    }
+
+//    private void bindProductsFromDocument(DocumentSnapshot doc) {
+//        if (doc == null || doc.getData() == null) {
+//            menuAdapter.submit(new ArrayList<>());
+//            return;
+//        }
+//        String categoryId = doc.getId();
+//        List<MenuItem> list = new ArrayList<>();
+//
+//        // Doc mengandungi fields: key=productId, value=productName
+//        for (Map.Entry<String, Object> e : doc.getData().entrySet()) {
+//            String productId = e.getKey();
+//            String name = String.valueOf(e.getValue());
+//
+//            // Andaikan harga belum disimpan → guna default / TODO ambil dari koleksi lain
+//            double price = 99.0;
+//
+//            // Path Storage untuk gambar
+//            String storagePath = "menu/" + categoryId + "/" + productId + ".jpg";
+//
+//            list.add(new MenuItem(productId, name, price, storagePath));
+//        }
+//
+//        // Limit ke 6 item
+//        if (list.size() > 6) list = list.subList(0, 6);
+//
+//        menuAdapter.submit(list);
+//    }
 }
