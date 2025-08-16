@@ -10,6 +10,7 @@
         android:orientation="vertical"
         android:layout_gravity="center"
         android:gravity="center"
+        android:background="@drawable/bg_category_item"
         android:padding="8dp">
 
     <ImageView
@@ -30,6 +31,7 @@
         android:layout_marginTop="2dp"
         android:fontFamily="@font/poppins_semi_bold"
         android:gravity="center"
+        android:textColor="@color/category_text_tint"
         android:text="Cartoon"
         android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="@+id/category_icon"

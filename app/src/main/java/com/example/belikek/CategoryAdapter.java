@@ -46,6 +46,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.VH> {
         if (selected != RecyclerView.NO_POSITION) notifyItemChanged(selected);
     }
 
+    public int getSelected() {
+        return selected;
+    }
+
     @NonNull @Override
     public VH onCreateViewHolder(@NonNull ViewGroup p, int vType) {
         View v = LayoutInflater.from(p.getContext())
@@ -58,8 +62,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.VH> {
         CategoryUI it = items.get(pos);
         setImageByName(h.icon, "ic_" + it.getId());
         h.label.setText(it.getLabel());
-        h.itemView.setSelected(pos == selected);
+        //mierza tukar
+        h.layout.setSelected(pos == selected);
         h.layout.setOnClickListener(v -> {
+            setSelected(pos);
             if (listener != null) {
                 listener.onItemClick(it, pos);
             }

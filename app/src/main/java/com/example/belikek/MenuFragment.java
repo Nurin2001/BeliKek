@@ -134,6 +134,7 @@ public class MenuFragment extends Fragment {
 
         // load category from db on side bar
         loadCategoriesFromDb();
+        categoryAdapter.setSelected(0);
         // check has order or not, if got, show checkout bar
         getOrderFromDb();
 
