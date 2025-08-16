@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -34,7 +36,7 @@ public class MenuFragment extends Fragment {
     private RecyclerView rvCategories, rvProducts;
     private CategoryAdapter categoryAdapter;
     private MenuAdapter menuAdapter;
-
+    private View checkoutBar;
     private TextView chipStatus, chipTime, tvTotal;
     private Button btnCheckout;
 
@@ -42,6 +44,32 @@ public class MenuFragment extends Fragment {
 
     private static String FIRESTORE_CATEGORIES = "categories";
     private List<MenuItem>  menuItems;
+
+    private double cartTotal = 0.0;
+    private static final String STATE_TOTAL = "state_total";
+
+    // Keys utk result dari MenuDetails
+    public static final String EXTRA_TOTAL_DELTA = "extra_total_delta";
+    public static final String EXTRA_CART_TOTAL  = "extra_cart_total";
+
+    private final ActivityResultLauncher<Intent> detailsLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
+                    result -> {
+                        if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
+                            Intent data = result.getData();
+
+                            // Cara biasa: tambah delta
+                            double delta = data.getDoubleExtra(EXTRA_TOTAL_DELTA, 0.0);
+                            if (delta != 0) cartTotal += delta;
+
+                            // (Opsyen) override jumlah penuh
+                            if (data.hasExtra(EXTRA_CART_TOTAL)) {
+                                cartTotal = data.getDoubleExtra(EXTRA_CART_TOTAL, cartTotal);
+                            }
+                            updateCheckoutBar();
+                        }
+                    });
 
     public MenuFragment() {}
 
@@ -72,17 +100,21 @@ public class MenuFragment extends Fragment {
         chipTime   = v.findViewById(R.id.chipTime);
 
         // Checkout include
-        View checkout = v.findViewById(R.id.checkoutBar);
-        if (checkout != null) {
-            tvTotal = checkout.findViewById(R.id.tvTotal);
-            btnCheckout = checkout.findViewById(R.id.btnCheckout);
-            if (btnCheckout != null) {
-                btnCheckout.setOnClickListener(view -> {
-                    // TODO: buka Checkout screen
-                });
-            }
-        }
-        setTotal(99.00); // contoh total
+
+        checkoutBar = v.findViewById(R.id.checkoutBar);          // ROOT include
+        tvTotal     = checkoutBar.findViewById(R.id.tvTotal);
+        btnCheckout = checkoutBar.findViewById(R.id.btnCheckout);
+
+        // Initially: show/hide ikut cartTotal
+        updateCheckoutBar();
+
+        checkoutBar.setVisibility(View.GONE);
+
+        btnCheckout.setOnClickListener(view -> {
+            Intent i = new Intent(getActivity(), ConfirmOrder.class);
+            i.putExtra("total", cartTotal);
+            startActivity(i);
+        });
         updateShopStatusUI(false, "00:00 P.M");
 
         // Sidebar categories (static list untuk UI; boleh fetch Firestore kalau ada koleksi 'categories')
@@ -118,8 +150,20 @@ public class MenuFragment extends Fragment {
         chipTime.setText(timeText);
     }
 
+    //Mierza tambah
+    private void updateCheckoutBar() {
+        if (cartTotal > 0) {
+            checkoutBar.setVisibility(View.VISIBLE);
+            tvTotal.setText(String.format("RM%.2f", cartTotal));
+        } else {
+            checkoutBar.setVisibility(View.GONE);
+        }
+    }
+    //?
+
     private void setTotal(double amt) {
-        if (tvTotal != null) tvTotal.setText(String.format("RM%.2f", amt));
+        cartTotal = amt;
+        updateCheckoutBar();
     }
 
     private void setupCategoryAdapterListener() {
@@ -231,6 +275,8 @@ public class MenuFragment extends Fragment {
         }
         return list;
     }
+
+
 
 //    private void bindProductsFromDocument(DocumentSnapshot doc) {
 //        if (doc == null || doc.getData() == null) {
