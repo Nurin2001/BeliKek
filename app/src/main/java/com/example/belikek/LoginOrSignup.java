@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,11 +20,15 @@ public class LoginOrSignup extends AppCompatActivity {
         setContentView(R.layout.activity_login_or_signup);
 
         Button loginBtn = findViewById(R.id.login_btn);
+        ImageButton backBtn = findViewById(R.id.loginsignup_back_btn);
+
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(LoginOrSignup.this, LoginActivity.class));
             }
         });
+
+        backBtn.setOnClickListener(v -> finish());
     }
 }

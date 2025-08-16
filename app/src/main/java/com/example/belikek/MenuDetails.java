@@ -108,6 +108,9 @@ public class MenuDetails extends AppCompatActivity {
                 addItemToDb();
             }
         });
+
+        ImageButton backBtn = findViewById(R.id.menudetails_back_btn);
+        backBtn.setOnClickListener(v -> finish());
     }
 
     @SuppressLint("ResourceAsColor")

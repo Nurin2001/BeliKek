@@ -17,6 +17,7 @@
         android:background="#FFFFFF">
 
         <ImageButton
+            android:id="@+id/menudetails_back_btn"
             android:layout_width="43dp"
             android:layout_height="32dp"
             android:src="@drawable/ic_back"
@@ -66,30 +67,6 @@
                 android:textStyle="bold"
                 android:layout_gravity="center"/>
 
-            <TextView
-                android:id="@+id/detail_cake_base_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Chocolate Moist/Vanilla Sponge/Buttercake"
-                android:textAlignment="center"
-                android:layout_gravity="center"
-                android:fontFamily="@font/poppins_light"/>
-            <TextView
-                android:id="@+id/detail_fillings_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Filling Inside : Chocolate Fudge Decoration"
-                android:textAlignment="center"
-                android:layout_gravity="center"
-                android:fontFamily="@font/poppins_light"/>
-            <TextView
-                android:id="@+id/detail_decoration_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Outside : Buttercream, Topper, Toys"
-                android:textAlignment="center"
-                android:layout_gravity="center"
-                android:fontFamily="@font/poppins_light"/>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/main_recyclerciew_cake_option"
                 android:layout_width="match_parent"
