@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,14 +13,13 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import static com.example.belikek.Constants.*;
 
 public class HomeFragment extends Fragment {
 
@@ -41,10 +39,9 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         RecyclerView rv = view.findViewById(R.id.rvMenu);
-//        TextView btnSeeMore = view.findViewById(R.id.btnSeeMore); // optional jika ada
 
         // Grid 2 kolum
-        rv.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        rv.setLayoutManager(new GridLayoutManager(getContext(), 3));
 
         MenuAdapter adapter = new MenuAdapter((item, position) -> {
             // TODO: buka detail item (optional)
@@ -55,8 +52,8 @@ public class HomeFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
 
         String categoryId = "cartoon";
-        db.collection("products")
-                .whereEqualTo("category_id", categoryId)
+        db.collection(PRODUCTS_COLLECTION)
+                .whereEqualTo(CATEGORY_ID_FIELD, categoryId)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
@@ -72,14 +69,6 @@ public class HomeFragment extends Fragment {
                 .addOnFailureListener(e -> {
                     Log.w("FirestoreQuery", "Error getting documents", e);
                 });
-
-        // "See More" → tukar ke tab Menu (jika btnSeeMore wujud dalam layout)
-//        if (btnSeeMore != null) {
-//            btnSeeMore.setOnClickListener(v -> {
-//                BottomNavigationView bottom = requireActivity().findViewById(R.id.bottom_nav);
-//                if (bottom != null) bottom.setSelectedItemId(R.id.shorts); // tukar id jika berbeza
-//            });
-//        }
     }
 
     private List<MenuItem> mapDocToMenuItems(@Nullable QuerySnapshot queryDocumentSnapshots) {
@@ -88,11 +77,12 @@ public class HomeFragment extends Fragment {
             if (documentSnapshot == null || !documentSnapshot.exists() || documentSnapshot.getData() == null) return list;
 
             String id = documentSnapshot.getId();
-            String name = documentSnapshot.getString("name");
-            Double price = documentSnapshot.getDouble("price");
-            String imagePath = documentSnapshot.getString("image_url");
+            String name = documentSnapshot.getString(NAME_FIELD);
+            Double price = documentSnapshot.getDouble(PRICE_FIELD);
+            String imagePath = documentSnapshot.getString(IMAGE_URL_FIELD);
+            boolean hasCakeOptions = documentSnapshot.getBoolean(HAS_CAKE_OPTIONS_FIELD);
 
-            list.add(new MenuItem(id, name, price, imagePath));
+            list.add(new MenuItem(id, name, price, imagePath, hasCakeOptions));
         }
         return list;
     }

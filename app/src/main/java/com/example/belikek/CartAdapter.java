@@ -23,7 +23,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
     public interface OnCartItemClickListener {
         void onIncreaseClick(int position);
         void onDecreaseClick(int position);
-        void onEditClick(int position);
     }
 
     public CartAdapter(List<Items> cartItems) {
@@ -68,12 +67,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         }
 
         // Set click listeners
-        holder.itemEdit.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onEditClick(position);
-            }
-        });
-
         holder.increaseButton.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onIncreaseClick(position);
@@ -114,7 +107,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
 
     static class CartViewHolder extends RecyclerView.ViewHolder {
         ImageView itemImage;
-        TextView itemName, itemEdit, itemPrice, itemDescription1, itemDescription2, itemDescription3, itemQuantity;
+        TextView itemName, itemPrice, itemDescription1, itemDescription2, itemDescription3, itemQuantity;
         ImageButton increaseButton, decreaseButton;
 
         public CartViewHolder(@NonNull View itemView) {
@@ -127,7 +120,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             itemDescription2 = itemView.findViewById(R.id.fill_tv);
             itemDescription3 = itemView.findViewById(R.id.deco_tv);
             itemQuantity = itemView.findViewById(R.id.item_quantity);
-            itemEdit = itemView.findViewById(R.id.item_edit);
             increaseButton = itemView.findViewById(R.id.item_increase);
             decreaseButton = itemView.findViewById(R.id.item_decrease);
         }

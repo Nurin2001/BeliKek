@@ -15,13 +15,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Design.Light.NoActionBar">
         <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LoginOrSignup"
+            android:exported="false" />
+        <activity
             android:name=".ConfirmOrder"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".HomeActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity2"
@@ -36,7 +39,7 @@
         </activity>
         <activity
             android:name=".MenuDetails"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".PaymentActivity"
             android:exported="false" />

@@ -1,8 +1,8 @@
 package com.example.belikek;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -38,9 +38,6 @@ public class MainActivity2 extends AppCompatActivity {
             return insets;
         });
 
-        // First get the include container, then find the BottomNavigationView inside it
-//        View bottomNavContainer = findViewById(R.id.bottom_nav_container);
-//        bottomNav = bottomNavContainer.findViewById(R.id.bottom_nav);
         bottomNav = findViewById(R.id.bottom_nav); // id dalam bottom_navigation_bar.xml
 
         // 3) Fragment awal
@@ -61,9 +58,7 @@ Log.d("bottomnav isExist", String.valueOf(bottomNav != null));
                     replace(new MenuFragment());           // tukar ke fragment sebenar nanti
                     return true;
                 } else if (id == R.id.subscriptions) {
-                    Log.d("profile tab", "profile tab");// tab "Cake"
-                    replace(new HomeFragment());        // tukar ke fragment sebenar nanti
-                    return true;
+                    startActivity(new Intent(MainActivity2.this, LoginOrSignup.class));
                 }
                 return false;
             });

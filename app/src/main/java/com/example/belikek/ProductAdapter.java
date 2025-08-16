@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-//import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,17 +50,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.VH> {
                     .placeholder(R.drawable.ic_cookies)
                     .error(R.drawable.ic_default_background)
                     .into(h.thumb);
-        } else {
-//            FirebaseStorage.getInstance()
-//                    .getReference(src)
-//                    .getDownloadUrl()
-//                    .addOnSuccessListener(uri -> Glide.with(h.thumb.getContext())
-//                            .load(uri)
-//                            .centerCrop()
-//                            .placeholder(R.drawable.placeholder)
-//                            .error(R.drawable.placeholder)
-//                            .into(h.thumb))
-//                    .addOnFailureListener(e -> h.thumb.setImageResource(R.drawable.placeholder));
         }
 
         h.itemView.setOnClickListener(v -> { if (onClick != null) onClick.onItem(it); });

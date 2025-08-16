@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -30,6 +31,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import static com.example.belikek.Constants.*;
 
 public class MenuFragment extends Fragment {
 
@@ -46,11 +49,11 @@ public class MenuFragment extends Fragment {
     private List<MenuItem>  menuItems;
 
     private double cartTotal = 0.0;
-    private static final String STATE_TOTAL = "state_total";
 
     // Keys utk result dari MenuDetails
     public static final String EXTRA_TOTAL_DELTA = "extra_total_delta";
     public static final String EXTRA_CART_TOTAL  = "extra_cart_total";
+    public static final String ORDERS_COLLECTION  = "orders";
 
     private final ActivityResultLauncher<Intent> detailsLauncher =
             registerForActivityResult(
@@ -67,8 +70,9 @@ public class MenuFragment extends Fragment {
                             if (data.hasExtra(EXTRA_CART_TOTAL)) {
                                 cartTotal = data.getDoubleExtra(EXTRA_CART_TOTAL, cartTotal);
                             }
-                            updateCheckoutBar();
+                            updateCheckoutBar(cartTotal);
                         }
+                        getOrderFromDb();
                     });
 
     public MenuFragment() {}
@@ -106,14 +110,15 @@ public class MenuFragment extends Fragment {
         btnCheckout = checkoutBar.findViewById(R.id.btnCheckout);
 
         // Initially: show/hide ikut cartTotal
-        updateCheckoutBar();
+        updateCheckoutBar(cartTotal);
 
         checkoutBar.setVisibility(View.GONE);
 
         btnCheckout.setOnClickListener(view -> {
             Intent i = new Intent(getActivity(), ConfirmOrder.class);
-            i.putExtra("total", cartTotal);
-            startActivity(i);
+//            i.putExtra("total", cartTotal);
+
+            detailsLauncher.launch(i);
         });
         updateShopStatusUI(false, "00:00 P.M");
 
@@ -129,6 +134,8 @@ public class MenuFragment extends Fragment {
 
         // load category from db on side bar
         loadCategoriesFromDb();
+        // check has order or not, if got, show checkout bar
+        getOrderFromDb();
 
         // Products grid
         rvProducts = v.findViewById(R.id.rvProducts);
@@ -139,7 +146,7 @@ public class MenuFragment extends Fragment {
         rvProducts.setAdapter(menuAdapter);
 
         // Muat produk awal
-        loadProductsForCategory("four-inch-cake");
+        loadProductsForCategory("four_inch_cake");
 
         setupCategoryAdapterListener();
         setUpProductAdapterListener();
@@ -150,21 +157,16 @@ public class MenuFragment extends Fragment {
         chipTime.setText(timeText);
     }
 
-    //Mierza tambah
-    private void updateCheckoutBar() {
-        if (cartTotal > 0) {
+    // how or hide checkout bar
+    private void updateCheckoutBar(double totalAmount) {
+        if (totalAmount > 0) {
             checkoutBar.setVisibility(View.VISIBLE);
-            tvTotal.setText(String.format("RM%.2f", cartTotal));
+            tvTotal.setText(String.format("RM%.2f", totalAmount));
         } else {
             checkoutBar.setVisibility(View.GONE);
         }
     }
     //?
-
-    private void setTotal(double amt) {
-        cartTotal = amt;
-        updateCheckoutBar();
-    }
 
     private void setupCategoryAdapterListener() {
         categoryAdapter.setOnCategoryClickListener(new CategoryAdapter.OnCategoryClickListener() {
@@ -194,17 +196,12 @@ public class MenuFragment extends Fragment {
         Intent intent = new Intent(getActivity(), MenuDetails.class);
         intent.putExtra("menu_detail", menuItem);
 
-        // Send multiple objects (ArrayList)
-        ArrayList<MenuItem> menuDetailList = new ArrayList<>();
-        menuDetailList.add(menuItem);
-//        intent.putParcelableArrayListExtra("category_list", menuDetailList);
-
-        startActivity(intent);
+        detailsLauncher.launch(intent);
     }
 
     private void loadCategoriesFromDb() {
-        db.collection(FIRESTORE_CATEGORIES)
-                .orderBy("display_order", Query.Direction.ASCENDING)  // or DESCENDING
+        db.collection(CATEGORIES_COLLECTION)
+                .orderBy(DISPLAY_ORDER_FIELD, Query.Direction.ASCENDING)  // or DESCENDING
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -215,22 +212,15 @@ public class MenuFragment extends Fragment {
                                 Log.d("Firestore", "Document ID: " + document.getId());
 
                                 // Access individual fields
-                                Long displayOrder = document.getLong("display_order");
-                                String id = document.getString("id");
-//                                String imageUrl = document.getString("image_url");
-                                Boolean isActive = document.getBoolean("is_active");
-                                String name = document.getString("name");
+                                Long displayOrder = document.getLong(DISPLAY_ORDER_FIELD);
+                                String id = document.getString(ID_FIELD);
+                                Boolean isActive = document.getBoolean(IS_ACTIVE_FIELD);
+                                String name = document.getString(NAME_FIELD);
 
                                 category.add(new CategoryUI(id, name));
-                                Log.d("Firestore", "display_order: " + displayOrder);
-                                Log.d("Firestore", "id: " + id);
-//                                Log.d("Firestore", "image_url: " + imageUrl);
-                                Log.d("Firestore", "is_active: " + isActive);
-                                Log.d("Firestore", "name: " + name);
 
                                 // Alternative: Get all data as a Map
                                 Map<String, Object> data = document.getData();
-                                Log.d("Firestore", "All data: " + data.toString());
                             }
                             categoryAdapter.submit(category);
                             categoryAdapter.setSelected(1); // default pilih "4 INCH"
@@ -242,8 +232,8 @@ public class MenuFragment extends Fragment {
     }
 
     private void loadProductsForCategory(@NonNull String categoryId) {
-        db.collection("products")
-                .whereEqualTo("category_id", categoryId)
+        db.collection(PRODUCTS_COLLECTION)
+                .whereEqualTo(CATEGORY_ID_FIELD, categoryId)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
@@ -267,42 +257,41 @@ public class MenuFragment extends Fragment {
             if (documentSnapshot == null || !documentSnapshot.exists() || documentSnapshot.getData() == null) return list;
 
             String id = documentSnapshot.getId();
-            String name = documentSnapshot.getString("name");
-            Double price = documentSnapshot.getDouble("price");
-            String imagePath = documentSnapshot.getString("image_url");
+            String name = documentSnapshot.getString(NAME_FIELD);
+            Double price = documentSnapshot.getDouble(PRICE_FIELD);
+            String imagePath = documentSnapshot.getString(IMAGE_URL_FIELD);
+            boolean hasCakeOptions = documentSnapshot.getBoolean(HAS_CAKE_OPTIONS_FIELD);
 
-            list.add(new MenuItem(id, name, price, imagePath));
+            list.add(new MenuItem(id, name, price, imagePath, hasCakeOptions));
         }
         return list;
     }
 
+    private void getOrderFromDb () {
+        String userId = "user_123";
+        db.collection(ORDERS_COLLECTION)
+                .whereEqualTo(USER_ID_FIELD, userId)
+                .whereEqualTo(PAYMENT_STATUS_FIELD, 4)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            // Document exists - add item to existing document
+                            DocumentSnapshot existingDoc = queryDocumentSnapshots.getDocuments().get(0); // Get first matching document
 
+                            double totalAmount = (double) existingDoc.get(TOTAL_AMOUNT_FIELD);
+                            cartTotal = totalAmount;
+                            updateCheckoutBar(totalAmount);
 
-//    private void bindProductsFromDocument(DocumentSnapshot doc) {
-//        if (doc == null || doc.getData() == null) {
-//            menuAdapter.submit(new ArrayList<>());
-//            return;
-//        }
-//        String categoryId = doc.getId();
-//        List<MenuItem> list = new ArrayList<>();
-//
-//        // Doc mengandungi fields: key=productId, value=productName
-//        for (Map.Entry<String, Object> e : doc.getData().entrySet()) {
-//            String productId = e.getKey();
-//            String name = String.valueOf(e.getValue());
-//
-//            // Andaikan harga belum disimpan → guna default / TODO ambil dari koleksi lain
-//            double price = 99.0;
-//
-//            // Path Storage untuk gambar
-//            String storagePath = "menu/" + categoryId + "/" + productId + ".jpg";
-//
-//            list.add(new MenuItem(productId, name, price, storagePath));
-//        }
-//
-//        // Limit ke 6 item
-//        if (list.size() > 6) list = list.subList(0, 6);
-//
-//        menuAdapter.submit(list);
-//    }
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+    }
 }

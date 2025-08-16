@@ -4,10 +4,9 @@ import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.CheckBox;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -15,13 +14,15 @@ import java.util.List;
 public class CakeOptionDetailAdapter extends RecyclerView.Adapter<CakeOptionDetailAdapter.ViewHolder> {
     private List<CakeOptionDetail> options;
     private OnOptionSelectedListener listener;
+    private boolean isMultiSelect;
 
     public interface OnOptionSelectedListener {
         void onOptionSelected(int position, CakeOptionDetail option);
     }
 
-    public CakeOptionDetailAdapter(List<CakeOptionDetail> options, OnOptionSelectedListener listener) {
+    public CakeOptionDetailAdapter(List<CakeOptionDetail> options, boolean isMultiSelect, OnOptionSelectedListener listener) {
         this.options = options;
+        this.isMultiSelect = isMultiSelect;
         this.listener = listener;
     }
 
@@ -37,30 +38,39 @@ public class CakeOptionDetailAdapter extends RecyclerView.Adapter<CakeOptionDeta
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         CakeOptionDetail option = options.get(position);
-        holder.optionButton.setText(option.getOptionName());
 
-        // Set button state based on selection
-        if (option.isSelected()) {
-            holder.optionButton.setBackground(ContextCompat.getDrawable(
-                    holder.itemView.getContext(), R.drawable.rounded_cake_options_selected_btn));
-            holder.optionButton.setTextColor(R.color.primaryPink);
-        } else {
-            holder.optionButton.setBackground(ContextCompat.getDrawable(
-                    holder.itemView.getContext(), R.drawable.rounded_cake_options_btn));
-            holder.optionButton.setTextColor(R.color.buyNowBtnText);
-        }
+        // Set checkbox text and state
+        holder.optionCheckbox.setText(option.getOptionName());
+        holder.optionCheckbox.setChecked(option.isSelected());
 
-        holder.optionButton.setOnClickListener(v -> {
-            // Handle single selection (unselect others)
-            for (CakeOptionDetail opt : options) {
-                opt.setSelected(false);
+        // Handle checkbox clicks
+        holder.optionCheckbox.setOnCheckedChangeListener(null); // Clear previous listener
+        holder.optionCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isMultiSelect) {
+                // Multiple selection allowed
+                option.setSelected(isChecked);
+            } else {
+                // Single selection only
+                if (isChecked) {
+                    // Uncheck all others
+                    for (CakeOptionDetail opt : options) {
+                        opt.setSelected(false);
+                    }
+                    option.setSelected(true);
+                    notifyDataSetChanged();
+                } else {
+                    option.setSelected(false);
+                }
             }
-            option.setSelected(true);
-            notifyDataSetChanged();
 
             if (listener != null) {
                 listener.onOptionSelected(position, option);
             }
+        });
+
+        // Handle checkbox container clicks (to make the whole area clickable)
+        holder.itemView.setOnClickListener(v -> {
+            holder.optionCheckbox.performClick();
         });
     }
 
@@ -70,11 +80,11 @@ public class CakeOptionDetailAdapter extends RecyclerView.Adapter<CakeOptionDeta
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        Button optionButton;
+        CheckBox optionCheckbox;
 
         ViewHolder(View itemView) {
             super(itemView);
-            optionButton = itemView.findViewById(R.id.detail_option_btn);
+            optionCheckbox = itemView.findViewById(R.id.detail_option_btn);
         }
     }
 }

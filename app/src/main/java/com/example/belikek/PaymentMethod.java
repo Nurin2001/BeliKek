@@ -88,7 +88,6 @@ public class PaymentMethod extends AppCompatActivity {
             paymentMethod = 1;
             selectedBank = bank;
             checkboxOnlineBanking.setChecked(true);
-            Toast.makeText(this, "Selected: " + bank.getBankName(), Toast.LENGTH_SHORT).show();
             TextView bankNameTv = findViewById(R.id.bank_name_tv);
             bankNameTv.setText(bank.getBankName());
             bankNameTv.setVisibility(View.VISIBLE);

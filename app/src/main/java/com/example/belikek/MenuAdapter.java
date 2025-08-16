@@ -11,7 +11,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +21,6 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.VH> {
 
     private final List<MenuItem> items = new ArrayList<>();
     private OnItemClick listener;
-
-    FirebaseFirestore db;
 
     public MenuAdapter(OnItemClick listener) {
         this.listener = listener;
@@ -44,13 +41,6 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.VH> {
         int size = items.size();
         items.clear();
         notifyItemRangeRemoved(0, size);
-    }
-
-    // update menu list
-    public void updateData(List<MenuItem> newList) {
-        items.clear();
-        items.addAll(newList);
-        notifyDataSetChanged();
     }
 
     @NonNull
@@ -85,10 +75,6 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.VH> {
                 listener.onClick(it, position);
             }
         });
-
-//        h.itemView.setOnClickListener(v -> {
-//            if (listener != null) listener.onClick(it);
-//        });
     }
 
     @Override

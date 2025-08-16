@@ -25,26 +25,4 @@ public class CartItem {
 
     public String getPrice() { return price; }
     public void setPrice(String price) { this.price = price; }
-
-    public String getDescription(int type) {
-        switch(type) {
-            case 1: return description1;
-            case 2: return description2;
-            case 3: return description3;
-        }
-        return "";
-    }
-    public void setDescription(int type, String description) {
-        switch(type) {
-            case 1: this.description1 = description; break;
-            case 2: this.description2 = description; break;
-            case 3: this.description3 = description; break;
-        }
-    }
-
-    public int getImageResourceId() { return imageResourceId; }
-    public void setImageResourceId(int imageResourceId) { this.imageResourceId = imageResourceId; }
-
-    public int getQuantity() { return quantity; }
-    public void setQuantity(int quantity) { this.quantity = quantity; }
 }
