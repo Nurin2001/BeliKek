@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -122,6 +123,9 @@ public class ConfirmOrder extends AppCompatActivity {
                 makePayment(bankCode, 1);
             }
         });
+
+        ImageButton backBtn = findViewById(R.id.confirmorder_back_btn);
+        backBtn.setOnClickListener(v -> finish());
     }
 
     private ActivityResultLauncher<Intent> paymentGatewayLauncher = registerForActivityResult(

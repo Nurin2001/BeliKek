@@ -1,6 +1,7 @@
 package com.example.belikek;
 
 import android.os.Bundle;
+import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,5 +15,8 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        ImageButton backBtn = findViewById(R.id.login_back_btn);
+
+        backBtn.setOnClickListener(v -> finish());
     }
 }
