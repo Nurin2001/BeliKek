@@ -3,17 +3,18 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <Button
+    <CheckBox
         android:id="@+id/detail_option_btn"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:background="@drawable/rounded_cake_options_btn"
+        android:background="@drawable/cake_option_checkbox_selector"
         android:paddingHorizontal="15dp"
         android:paddingVertical="12dp"
         android:text="Chocolate Moist"
         android:textAllCaps="false"
         android:textColor="@color/buyNowBtnText"
         android:textSize="10sp"
-        android:layout_marginRight="10dp" />
+        android:layout_marginRight="10dp"
+        android:button="@null"/>
 </LinearLayout>

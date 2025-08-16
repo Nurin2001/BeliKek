@@ -60,9 +60,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.VH> {
         h.label.setText(it.getLabel());
         h.itemView.setSelected(pos == selected);
         h.layout.setOnClickListener(v -> {
-            Log.d("layout isclick", "yes");
             if (listener != null) {
-                Log.d("layout isnull", "no");
                 listener.onItemClick(it, pos);
             }
         });

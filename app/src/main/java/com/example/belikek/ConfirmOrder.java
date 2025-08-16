@@ -47,12 +47,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.example.belikek.Constants.*;
+
 public class ConfirmOrder extends AppCompatActivity {
     private static final int REQUEST_CODE_B = 100;
-    private RecyclerView recyclerView;
+
     private CartAdapter adapter;
+
     private List<Items> cartItems;
-    FirebaseFirestore db;
     DecimalFormat df = new DecimalFormat("0.00");
     Double subtotal = 0.00;
     Double finalPrice = 0.00;
@@ -60,7 +62,10 @@ public class ConfirmOrder extends AppCompatActivity {
     int totalQuantity = 0;
     String bankCode;
     String billCode;
+    String orderDocument;
+    FirebaseFirestore db;
 
+    private RecyclerView recyclerView;
     ConstraintLayout choosePaymethodLayout;
     TextView finalQuantityTv, finalPriceTv, grandPriceTv, subtotalTv;
     Button confirmOrderBtn;
@@ -114,7 +119,7 @@ public class ConfirmOrder extends AppCompatActivity {
         confirmOrderBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                makePayment(bankCode, getFinalPrice() + getTransactionFee());
+                makePayment(bankCode, 1);
             }
         });
     }
@@ -178,11 +183,6 @@ public class ConfirmOrder extends AppCompatActivity {
     private void setupAdapterListeners() {
         adapter.setOnCartItemClickListener(new CartAdapter.OnCartItemClickListener() {
             @Override
-            public void onEditClick(int position) {
-//                adapter.removeItem(position);
-            }
-
-            @Override
             public void onIncreaseClick(int position) {
                 Items item = cartItems.get(position);
                 setTotalQuantity(getTotalQuantity() + 1);
@@ -245,16 +245,16 @@ public class ConfirmOrder extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String userId = "user_123";
 
-        db.collection("orders")
-                .whereEqualTo("user_id", userId)
-                .whereEqualTo("payment_status", 4)
+        db.collection(ORDERS_COLLECTION)
+                .whereEqualTo(USER_ID_FIELD, userId)
+                .whereEqualTo(PAYMENT_STATUS_FIELD, 4)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         if (!task.getResult().isEmpty()) {
                             // Read the items array manually
                             DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
-                            List<Map<String, Object>> itemsData = (List<Map<String, Object>>) documentSnapshot.get("items");
+                            List<Map<String, Object>> itemsData = (List<Map<String, Object>>) documentSnapshot.get(ITEMS_FIELD);
                             List<Items> itemsList = new ArrayList<>();
 
                             if (itemsData != null) {
@@ -262,50 +262,41 @@ public class ConfirmOrder extends AppCompatActivity {
                                     Items item = new Items();
 
                                     // Read base_price
-                                    if (singleItem.get("base_price") != null) {
-                                        Double basePrice = ((Number) singleItem.get("base_price")).doubleValue();
+                                    if (singleItem.get(BASE_PRICE_FIELD) != null) {
+                                        Double basePrice = ((Number) singleItem.get(BASE_PRICE_FIELD)).doubleValue();
                                         item.setBase_price(basePrice);
                                     }
 
                                     // Read nested customizations object
-                                    Map<String, Object> customizations = (Map<String, Object>) singleItem.get("customizations");
+                                    Map<String, Object> customizations = (Map<String, Object>) singleItem.get(CUSTOMIZATIONS_FIELD);
 
                                     if (customizations != null) {
                                         // Read cake_base object
-                                        Map<String, Object> cakeBaseData = (Map<String, Object>) customizations.get("cake_base");
+                                        Map<String, Object> cakeBaseData = (Map<String, Object>) customizations.get(CAKE_BASE_FIELD);
                                         if (cakeBaseData != null) {
                                             CakeBase cakeBase = new CakeBase();
-                                            cakeBase.setOption_id((String) cakeBaseData.get("option_id"));
-                                            cakeBase.setOption_name((String) cakeBaseData.get("option_name"));
-                                            if (cakeBaseData.get("price_modifier") != null) {
-                                                cakeBase.setPrice_modifier(((Number) cakeBaseData.get("price_modifier")).intValue());
-                                            }
+                                            cakeBase.setOption_id((String) cakeBaseData.get(OPTION_ID_FIELD));
+                                            cakeBase.setOption_name((String) cakeBaseData.get(OPTION_NAME_FIELD));
                                             item.setCake_base(cakeBase);
                                         }
 
                                         // Read fillings object
-                                        Map<String, Object> fillingsData = (Map<String, Object>) customizations.get("fillings");
+                                        Map<String, Object> fillingsData = (Map<String, Object>) customizations.get(FILLINGS_FIELD);
                                         if (fillingsData != null) {
                                             Fillings filling = new Fillings();
-                                            filling.setOption_id((String) fillingsData.get("option_id"));
-                                            filling.setOption_name((String) fillingsData.get("option_name"));
-                                            if (fillingsData.get("price_modifier") != null) {
-                                                filling.setPrice_modifier(((Number) fillingsData.get("price_modifier")).intValue());
-                                            }
+                                            filling.setOption_id((String) fillingsData.get(OPTION_ID_FIELD));
+                                            filling.setOption_name((String) fillingsData.get(OPTION_NAME_FIELD));
                                             item.setFillings(filling);
                                         }
 
                                         // Read decorations array
-                                        List<Map<String, Object>> decorationsData = (List<Map<String, Object>>) customizations.get("decorations");
+                                        List<Map<String, Object>> decorationsData = (List<Map<String, Object>>) customizations.get(DECORATIONS_FIELD);
                                         if (decorationsData != null) {
                                             List<Decoration> decorations = new ArrayList<>();
                                             for (Map<String, Object> decorationData : decorationsData) {
                                                 Decoration decoration = new Decoration();
-                                                decoration.setOption_name((String) decorationData.get("option_name"));
-                                                decoration.setOption_id((String) decorationData.get("option_id"));
-                                                if (decorationData.get("price_modifier") != null) {
-                                                    decoration.setPrice_modifier(((Number) decorationData.get("price_modifier")).intValue());
-                                                }
+                                                decoration.setOption_name((String) decorationData.get(OPTION_NAME_FIELD));
+                                                decoration.setOption_id((String) decorationData.get(OPTION_ID_FIELD));
                                                 decorations.add(decoration);
                                             }
                                             item.setDecorations(decorations);
@@ -314,48 +305,39 @@ public class ConfirmOrder extends AppCompatActivity {
 
                                     // Add other fields if they exist in your Firestore
                                     // read product name
-                                    if (singleItem.get("product_name") != null) {
-                                        Log.d("cake name", (String) singleItem.get("product_name"));
-                                        item.setProduct_name((String) singleItem.get("product_name"));
+                                    if (singleItem.get(PRODUCT_NAME_FIELD) != null) {
+                                        item.setProduct_name((String) singleItem.get(PRODUCT_NAME_FIELD));
                                     }
 
                                     // get product_id
-                                    if (singleItem.get("product_id") != null) {
-                                        Log.d("cake id", (String) singleItem.get("product_id"));
-                                        item.setProduct_id((String) singleItem.get("product_id"));
+                                    if (singleItem.get(PRODUCT_ID_FIELD) != null) {
+                                        item.setProduct_id((String) singleItem.get(PRODUCT_ID_FIELD));
                                     }
 
                                     // read quantity
-                                    if (singleItem.get("quantity") != null) {
-                                        item.setQuantity(((Number) singleItem.get("quantity")).intValue());
+                                    if (singleItem.get(QUANTITY_FIELD) != null) {
+                                        item.setQuantity(((Number) singleItem.get(QUANTITY_FIELD)).intValue());
                                         item.setTotalEachCake(item.getQuantity() * item.getBase_price());
                                         setTotalQuantity(getTotalQuantity() + item.getQuantity());
                                     }
 
-                                    Log.d("Image URL: ", String.valueOf(singleItem.get("image_url")));
                                     // Read image_url and load image
-                                    if (singleItem.get("image_url") != null) {
-                                        String imageUrl = (String) singleItem.get("image_url");
+                                    if (singleItem.get(IMAGE_URL_FIELD) != null) {
+                                        String imageUrl = (String) singleItem.get(IMAGE_URL_FIELD);
                                         item.setImageUrl(imageUrl); // Make sure your Items class has this setter
                                     }
 
                                     itemsList.add(item);
 
                                     // set subTotal - subTotal is the price shown next to the Amount label
-
-                                    Log.d("subtotal from fn", String.valueOf(getSubtotal()));
                                     setSubtotal(getSubtotal() + (item.getBase_price() * item.getQuantity()));
                                     setFinalPrice(getSubtotal());
-                                    Log.d("subtotal from fn after add", String.valueOf(getSubtotal()));
-                                    Log.d("subtotal", String.valueOf(getSubtotal()));
                                 }
                             }
 
                             subtotalTv.setText("RM" + df.format(getSubtotal()));
                             setFinalPrice(getFinalPrice() + 5);
                             updateGrandTotal(finalPriceTv, grandPriceTv, getFinalPrice());
-
-                            Log.d(TAG, "Items loaded: " + itemsList.size());
 
                             // Clear existing data and add new
                             cartItems.clear();
@@ -376,19 +358,19 @@ public class ConfirmOrder extends AppCompatActivity {
 
     // remove item from db
     private void removeItemFromDb(String productId, String orderId) {
-        db.collection("orders")
-                .whereEqualTo("id", orderId)
+        db.collection(ORDERS_COLLECTION)
+                .whereEqualTo(ID_FIELD, orderId)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                        List<Map<String, Object>> items = (List<Map<String, Object>>) documentSnapshot.get("items");
+                        List<Map<String, Object>> items = (List<Map<String, Object>>) documentSnapshot.get(ITEMS_FIELD);
 
                         if (items != null) {
                             // Remove items with matching product_id
-                            items.removeIf(item -> productId.equals(item.get("product_id")));
+                            items.removeIf(item -> productId.equals(item.get(PRODUCT_ID_FIELD)));
 
                             // Update the document
-                            documentSnapshot.getReference().update("items", items)
+                            documentSnapshot.getReference().update(ITEMS_FIELD, items)
                                     .addOnSuccessListener(aVoid -> {
                                         Log.d("FIRESTORE", "Item removed successfully");
                                     })
@@ -407,8 +389,10 @@ public class ConfirmOrder extends AppCompatActivity {
     //    make the payment
     private void makePayment(String bankCode, double totalAmount) {
         String custName = "Test Customer", billEmail = "abc123@gmail.com", billPhone = "0123456789";
-        String userSecretKey = "sh02eahr-60s5-z9hj-trxt-3hw4ntisy07h"; // Get from ToyyibPay dashboard
-        String categoryCode = "uxi1zyfd"; // Get from ToyyibPay dashboard
+
+        // CHANGE WHEN HAND OVER
+        String userSecretKey = TOYYIBPAY_USER_SECRET_CODE; // Get from ToyyibPay dashboard
+        String categoryCode = TOYYIBPAY_CATEGORY_CODE; // Get from ToyyibPay dashboard
 
         ToyyibPayAPI apiService = ToyyibPayClient.getApiService();
         Call<ResponseBody> call = apiService.createBillRaw(
@@ -428,14 +412,11 @@ public class ConfirmOrder extends AppCompatActivity {
                 "0" // billPaymentChannel (0 = FPX)
         );
 
-        Log.d("PAYMENT_DEBUG", "Selected Bank Code: " + bankCode);
-
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
                     String responseString = response.body().string();
-                    Log.d("CREATE_BILL_RAW", "Raw response: " + responseString);
 
                     // Parse as JSONArray since the response is an array
                     JSONArray jsonArray = new JSONArray(responseString);
@@ -443,9 +424,7 @@ public class ConfirmOrder extends AppCompatActivity {
                         JSONObject firstObject = jsonArray.getJSONObject(0);
                         String billCode = firstObject.getString("BillCode");
 
-                        Log.d("CREATE_BILL_SUCCESS", "BillCode: " + billCode);
-
-                        String paymentUrl = "https://toyyibpay.com/" + billCode;
+                        String paymentUrl = TOYYIBPAY_URL + billCode;
                         addBillCodeField(billCode);
                         openPaymentPage(paymentUrl);
                     } else {
@@ -473,35 +452,63 @@ public class ConfirmOrder extends AppCompatActivity {
 
     private void addBillCodeField(String billCode) {
         Map<String, Object> updates = new HashMap<>();
-        updates.put("bill_code", billCode);
-        updates.put("updated_at", FieldValue.serverTimestamp());
+        updates.put(BILL_CODE_FIELD, billCode);
+        updates.put(UPDATED_AT_FIELD, FieldValue.serverTimestamp());
 
-        db.collection("orders")
-                .document("order_0001")
-                .update(updates)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
+        String userId = "user_123";
+
+        db.collection(ORDERS_COLLECTION)
+                .whereEqualTo(USER_ID_FIELD, userId)
+                .whereEqualTo(PAYMENT_STATUS_FIELD, 4)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("Firestore", "Bill code added successfully!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("Firestore", "Error adding bill code", e);
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            // Document exists - add item to existing document
+                            DocumentSnapshot existingDoc = queryDocumentSnapshots.getDocuments().get(0); // Get first matching document
+                            String existingDocId = existingDoc.getId();
+                            setDocumentId(existingDocId);
+
+                            db.collection(ORDERS_COLLECTION)
+                                    .document(existingDocId)
+                                    .update(updates)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            Log.d("Firestore", "Bill code added successfully!");
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.w("Firestore", "Error adding bill code", e);
+                                        }
+                                    });
+                        }
                     }
                 });
     }
 
+    private void setDocumentId(String documentId) {
+        this.orderDocument = documentId;
+    }
+
+    private String getDocumentId() {
+        return this.orderDocument;
+    }
+
     private void readBillCodeFromDb() {
-        db.collection("orders")
-                .document("order_0001")
+        String userId = "user_123";
+
+        db.collection(ORDERS_COLLECTION)
+                .document(getDocumentId())
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot document) {
                         if (document.exists()) {
-                            String billCode = document.getString("bill_code");
+                            String billCode = document.getString(BILL_CODE_FIELD);
                             if (billCode != null) {
                                 Log.d("Firestore", "Bill Code: " + billCode);
                                 setBillCode(billCode);
@@ -533,14 +540,14 @@ public class ConfirmOrder extends AppCompatActivity {
 
     private void updatePaymentStatusInDb(int paymentStatus) {
         Map<String, Object> updates = new HashMap<>();
-        updates.put("payment_status", paymentStatus);
-        updates.put("updated_at", FieldValue.serverTimestamp());
+        updates.put(PAYMENT_STATUS_FIELD, paymentStatus);
+        updates.put(UPDATED_AT_FIELD, FieldValue.serverTimestamp());
 
         String userId = "user_123";
 
-        db.collection("orders")
-                .whereEqualTo("user_id", userId)
-                .whereEqualTo("payment_status", 4)
+        db.collection(ORDERS_COLLECTION)
+                .whereEqualTo(USER_ID_FIELD, userId)
+                .whereEqualTo(PAYMENT_STATUS_FIELD, 4)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
@@ -559,22 +566,6 @@ public class ConfirmOrder extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     Log.w("FirestoreQuery", "Error getting documents", e);
                 });
-
-//        db.collection("orders")
-//                .document("order_0001")
-//                .update(updates)
-//                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        Log.d("Firestore", "Payment status updated successfully!");
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Log.w("Firestore", "Error updating payment status", e);
-//                    }
-//                });
     }
 
     private String generateReferenceNo() {
@@ -584,7 +575,7 @@ public class ConfirmOrder extends AppCompatActivity {
     // open payment gateway
     private void openPaymentPage(String paymentUrl) {
         Intent intent = new Intent(this, PaymentActivity.class);
-        intent.putExtra("payment_url", paymentUrl);
+        intent.putExtra(PAYMENT_URL_FIELD, paymentUrl);
         paymentGatewayLauncher.launch(intent);
     }
 
@@ -597,16 +588,15 @@ public class ConfirmOrder extends AppCompatActivity {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
                     String responseString = response.body().string();
-                    Log.d("PAYMENT_STATUS", "Status response: " + responseString);
 
                     JSONArray jsonArray = new JSONArray(responseString);
                     if (jsonArray.length() > 0) {
                         JSONObject transaction = jsonArray.getJSONObject(0);
-                        String billPaymentStatus = transaction.getString("billpaymentStatus");
+                        String billPaymentStatus = transaction.getString(TOYYIBPAY_BILL_PAYMENT_STATUS);
 
                         runOnUiThread(() -> {
+                            updatePaymentStatusInDb(Integer.parseInt(billPaymentStatus));
                             if ("1".equals(billPaymentStatus)) {
-                                updatePaymentStatusInDb(Integer.parseInt(billPaymentStatus));
                                 showPaymentResult("success", "Payment completed successfully!");
                             } else {
                                 showPaymentResult("pending", "Payment is being processed...");
@@ -680,20 +670,22 @@ public class ConfirmOrder extends AppCompatActivity {
     }
 
     private void updateQuantityFirestore(int position, int newQuantityValue) {
-// Parameters
-        String orderId = "order_0001";
+        // Parameters
+        String userId = "user_123";
 
-// Method 1: Update using document retrieval (Recommended)
-        db.collection("orders")
-                .document(orderId)
+        db.collection(ORDERS_COLLECTION)
+                .whereEqualTo(USER_ID_FIELD, userId)
+                .whereEqualTo(PAYMENT_STATUS_FIELD, 4)
                 .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
-                    public void onSuccess(DocumentSnapshot document) {
-                        if (document.exists()) {
-                            // Get the current items array
-                            List<Map<String, Object>> items = (List<Map<String, Object>>) document.get("items");
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        // Document exists - add item to existing document
+                        DocumentSnapshot existingDoc = queryDocumentSnapshots.getDocuments().get(0); // Get first matching document
+                        String existingDocId = existingDoc.getId();
 
+                        List<Map<String, Object>> items = (List<Map<String, Object>>) existingDoc.get(ITEMS_FIELD);
+//
                             if (items != null && position < items.size()) {
                                 // Update only the quantity
                                 Map<String, Object> item = items.get(position);
@@ -701,11 +693,12 @@ public class ConfirmOrder extends AppCompatActivity {
 
                                 // Update the document
                                 Map<String, Object> updates = new HashMap<>();
-                                updates.put("items", items);
-                                updates.put("updated_at", FieldValue.serverTimestamp());
+                                updates.put(TOTAL_AMOUNT_FIELD, getSubtotal());
+                                updates.put(ITEMS_FIELD, items);
+                                updates.put(UPDATED_AT_FIELD, FieldValue.serverTimestamp());
 
-                                db.collection("orders")
-                                        .document(orderId)
+                                db.collection(ORDERS_COLLECTION)
+                                        .document(existingDocId)
                                         .update(updates)
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
@@ -719,10 +712,9 @@ public class ConfirmOrder extends AppCompatActivity {
                                                 Log.w("Firestore", "Error updating quantity", e);
                                             }
                                         });
-                            }
-                        } else {
+                            } else {
                             Log.d("Firestore", "Order not found");
-                        }
+                            }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

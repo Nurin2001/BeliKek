@@ -304,7 +304,8 @@
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/view">
+                    app:layout_constraintTop_toBottomOf="@+id/view"
+                    android:gravity="center">
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rvMenu"
@@ -312,7 +313,8 @@
                         android:layout_height="wrap_content"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/view" />
+                        app:layout_constraintTop_toBottomOf="@+id/view"
+                        android:layout_gravity="center"/>
 
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>

@@ -30,22 +30,4 @@ public class Order {
     // Getters and Setters
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
-
-    public String getOrder_no() { return order_no; }
-    public void setOrder_no(String order_no) { this.order_no = order_no; }
-
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-
-    public int getTotal_amount() { return total_amount; }
-    public void setTotal_amount(int total_amount) { this.total_amount = total_amount; }
-
-    public String getUser_id() { return user_id; }
-    public void setUser_id(String user_id) { this.user_id = user_id; }
-
-    public Timestamp getCreated_at() { return created_at; }
-    public void setCreated_at(Timestamp created_at) { this.created_at = created_at; }
-
-    public List<Items> getItems() { return items; }
-    public void setItems(List<Items> items) { this.items = items; }
 }

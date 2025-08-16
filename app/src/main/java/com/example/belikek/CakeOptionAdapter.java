@@ -46,8 +46,12 @@ public class CakeOptionAdapter extends RecyclerView.Adapter<CakeOptionAdapter.Vi
         holder.innerRecyclerView.setHasFixedSize(true);
         holder.innerRecyclerView.setNestedScrollingEnabled(false);
 
+        // Determine if this category allows multiple selections
+        boolean isMultiSelect = cakeOption.getPickText().contains("at least 1");
+
         CakeOptionDetailAdapter innerAdapter = new CakeOptionDetailAdapter(
                 cakeOption.getOptions(),
+                isMultiSelect,
                 (optionPosition, option) -> {
                     if (listener != null) {
                         listener.onOptionSelected(position, optionPosition, option);

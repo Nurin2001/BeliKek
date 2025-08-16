@@ -7,9 +7,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.belikek.Bank;
-import com.example.belikek.R;
-
 import java.util.List;
 
 public class BankAdapter extends RecyclerView.Adapter<BankAdapter.BankViewHolder> {
