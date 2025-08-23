@@ -8,8 +8,6 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,11 +41,7 @@ public class PromotionAdapter extends RecyclerView.Adapter<PromotionAdapter.VH> 
     public void onBindViewHolder(@NonNull VH h, int position) {
         PromotionItem it = items.get(position);
 
-        // Load image (can be http url or gs:// via Storage -> downloadUrl)
-        Glide.with(h.image.getContext())
-                .load(it.imageUrl)
-                .centerCrop()
-                .into(h.image);
+        ImageLoader.imageLoader(h.image.getContext(), h.image, it.imageUrl);
 
         h.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onClick(it, position);
@@ -73,7 +67,7 @@ public class PromotionAdapter extends RecyclerView.Adapter<PromotionAdapter.VH> 
         ImageView image;
         VH(@NonNull View v) {
             super(v);
-            image = v.findViewById(R.id.imageView); // id inside item_promotion_banner.xml
+            image = v.findViewById(R.id.promotion_img); // id inside item_promotion_banner.xml
         }
     }
 

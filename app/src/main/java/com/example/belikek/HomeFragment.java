@@ -81,8 +81,7 @@ public class HomeFragment extends Fragment {
                 .addOnFailureListener(e -> Log.w("FirestoreQuery", "products error", e));
 
         // Load promotions
-        db.collection(PROMOTIONS_COLLECTION)              // e.g. "promotions"
-                .orderBy(DISPLAY_ORDER_FIELD, Query.Direction.ASCENDING)
+        db.collection(PROMOTIONS_COLLECTION)
                 .get()
                 .addOnSuccessListener((OnSuccessListener<QuerySnapshot>) qs -> {
                     List<PromotionAdapter.PromotionItem> banners = new ArrayList<>();

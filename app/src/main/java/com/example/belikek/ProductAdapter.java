@@ -9,8 +9,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,16 +39,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.VH> {
         h.name.setText(it.name);
         h.price.setText(String.format("RM %.2f", it.price));
 
-        // Jika imagePathOrUrl bermula http, load terus; jika tidak, anggap Storage path
-        String src = it.imagePathOrUrl;
-        if (src != null && (src.startsWith("http://") || src.startsWith("https://"))) {
-            Glide.with(h.thumb.getContext())
-                    .load(src)
-                    .centerCrop()
-                    .placeholder(R.drawable.ic_cookies)
-                    .error(R.drawable.ic_default_background)
-                    .into(h.thumb);
-        }
+        String src = it.imagePathOrUrl != null ? it.imagePathOrUrl : null;
+        ImageLoader.imageLoader(h.thumb.getContext(), h.thumb, src);
 
         h.itemView.setOnClickListener(v -> { if (onClick != null) onClick.onItem(it); });
     }
