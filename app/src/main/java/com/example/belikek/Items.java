@@ -18,33 +18,13 @@ public class Items {
     // Required empty constructor for Firestore
     public Items() {}
 
-    public Items(CakeBase cake_base, Fillings fillings, List<Decoration> decorations, String product_id,
-                 String product_name, int quantity, double base_price, String imageUrl) {
-        this.cake_base = cake_base;
-        this.fillings = fillings;
-        this.decorations = decorations;
-        this.product_id = product_id;
-        this.product_name = product_name;
-        this.quantity = quantity;
-        this.base_price = base_price;
-        this.totalEachCake = base_price * quantity;
-        this.subTotal = 0;
-        this.imageUrl = imageUrl;
-    }
-
     // Getters and Setters
-    public CakeBase getCake_base() { return cake_base; }
     public void setCake_base(CakeBase cake_base) { this.cake_base = cake_base; }
-
-    public Fillings getFillings() {
-        return fillings;
-    }
 
     public void setFillings(Fillings fillings) {
         this.fillings = fillings;
     }
 
-    public List<Decoration> getDecorations() { return decorations; }
     public void setDecorations(List<Decoration> decorations) { this.decorations = decorations; }
 
     public String getProduct_id() { return product_id; }
@@ -88,14 +68,6 @@ public class Items {
 
     public void setTotalEachCake(double totalEachCake) {
         this.totalEachCake = totalEachCake;
-    }
-
-    public double getSubTotal() {
-        return subTotal;
-    }
-
-    public void setSubTotal(double subTotal) {
-        this.subTotal = subTotal;
     }
 
     public String getImageUrl() {

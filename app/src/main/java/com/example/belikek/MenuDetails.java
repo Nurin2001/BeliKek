@@ -17,7 +17,6 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -47,7 +46,6 @@ public class MenuDetails extends AppCompatActivity {
     private StringBuilder stringCakeOptions;
     private List<CakeOptionDetail> selectedCakeOptionDetails;
 
-    public static final String EXTRA_TOTAL_DELTA = "extra_total_delta";
     public static final String EXTRA_CART_TOTAL  = "extra_cart_total";
 
     DecimalFormat df = new DecimalFormat("0.00");
@@ -122,12 +120,7 @@ public class MenuDetails extends AppCompatActivity {
         priceTv.setText("RM" + df.format(menuitem.getPrice()));
 
         if (menuitem.getImagePath() != null) {
-            Glide.with(cakeImage.getContext())
-                    .load(menuitem.getImagePath())
-                    .placeholder(R.drawable.ic_cookies) // Add a placeholder image
-                    .error(R.drawable.ic_cartoon) // Add an error image
-                    .centerCrop()
-                    .into(cakeImage);
+            ImageLoader.imageLoader(cakeImage.getContext(), cakeImage, menuitem.getImagePath());
         } else {
             cakeImage.setImageResource(R.drawable.ic_default_background);
         }
@@ -271,7 +264,6 @@ public class MenuDetails extends AppCompatActivity {
                             String newProductId = (String) newItem.get(PRODUCT_ID_FIELD);
 
                             double newTotal = 0.0;
-                            Log.d("item size", String.valueOf(items.size()));
 
                             for (int i = 0; i < items.size(); i++) {
                                 Map<String, Object> existingItem = items.get(i);
@@ -286,7 +278,6 @@ public class MenuDetails extends AppCompatActivity {
                                 if (newProductId.equals(existingProductId)) {
                                     // Item exists - check and merge decorations
                                     itemExists = true;
-                                    Log.d("Firestore", "Item already exists. Checking decorations...");
 
                                     // Completely replace customizations with new ones
                                     Map<String, Object> newCustomizations = (Map<String, Object>) newItem.get("customizations");
@@ -294,11 +285,9 @@ public class MenuDetails extends AppCompatActivity {
                                     if (newCustomizations != null) {
                                         // Replace entire customizations with new data
                                         existingItem.put("customizations", newCustomizations);
-                                        Log.d("Firestore", "Completely replaced all customizations with new selection");
                                     } else {
                                         // User deselected everything - remove customizations
                                         existingItem.put("customizations", null);
-                                        Log.d("Firestore", "Removed all customizations (user deselected everything)");
                                     }
 
                                     // Update other item fields (quantity, prices, etc.)
@@ -310,30 +299,20 @@ public class MenuDetails extends AppCompatActivity {
                                 }
 //                                  Calculate new total by summing all items
                                 newTotal += (Double) (basePrice * quantity) + (existingBase_price * existingQuantity);
-
-                                Log.d("existing price", String.valueOf(existingBase_price));
-                                Log.d("new item price", String.valueOf(existingBase_price));
-                                Log.d("existing qty", String.valueOf(existingBase_price));
-                                Log.d("new item qty", String.valueOf(existingBase_price));
-
                             }
 
                             // If item doesn't exist, add it as new item
                             if (!itemExists) {
                                 items.add(newItem);
-
-                                Log.d("Firestore", "Item doesn't exist. Adding as new item.");
                             }
 
                             // Update existing document
                             Map<String, Object> updates = new HashMap<>();
 
-//                            updates.put("final_price", newTotal);
                             updates.put(ITEMS_FIELD, items);
                             updates.put(TOTAL_AMOUNT_FIELD, newTotal);
                             updates.put(UPDATED_AT_FIELD, FieldValue.serverTimestamp());
 
-                            boolean finalItemExists = itemExists;
                             double finalNewTotal = newTotal;
                             db.collection(ORDERS_COLLECTION)
                                     .document(existingDocId)
@@ -354,8 +333,6 @@ public class MenuDetails extends AppCompatActivity {
                         }
                         else {
                             // Document doesn't exist - create new document
-                            Log.d("Firestore", "No existing document found. Creating new order...");
-
                             // Create new order data with randomized document ID
                             Map<String, Object> newOrderData = new HashMap<>();
 
@@ -374,23 +351,22 @@ public class MenuDetails extends AppCompatActivity {
                             newItems.add(newItem);
                             newOrderData.put("items", newItems);
 
-                            double basePrice = (double) newItem.get("base_price");
-                            int qty = (int) newItem.get("quantity");
+                            double basePrice = (double) newItem.get(BASE_PRICE_FIELD);
+                            int qty = (int) newItem.get(QUANTITY_FIELD);
 
                             newOrderData.put("total_amount", basePrice * qty);
 
                             newOrderData.put("created_at", FieldValue.serverTimestamp());
-                            newOrderData.put("updated_at", FieldValue.serverTimestamp());
+                            newOrderData.put(UPDATED_AT_FIELD, FieldValue.serverTimestamp());
 
                             // Create document with random ID
-                            db.collection("orders")
+                            db.collection(ORDERS_COLLECTION)
                                     .document(randomOrderId)
                                     .set(newOrderData)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
                                             Toast.makeText(MenuDetails.this,"Item is added!", Toast.LENGTH_LONG).show();
-                                            Log.d("Firestore", "New order created successfully with ID: " + randomOrderId);
 
                                             double basePrice = (double) newItem.get("base_price");
                                             int quantity = (int) newItem.get("quantity");

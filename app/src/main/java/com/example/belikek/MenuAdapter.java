@@ -10,8 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,14 +56,8 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.VH> {
         h.title.setText(it.getName());
         h.price.setText(String.format("RM %.2f", it.getPrice()));
 
-        // Load gambar dari Firebase Storage → imagePath contoh: "menu/cartoon/baby_shark.jpg"
         if (h.image != null) {
-            Glide.with(h.itemView.getContext())
-                    .load(it.getImagePath())
-                    .placeholder(R.drawable.ic_cookies) // Add a placeholder image
-                    .error(R.drawable.ic_cartoon) // Add an error image
-                    .centerCrop()
-                    .into(h.image);
+            ImageLoader.imageLoader(h.itemView.getContext(), h.image, it.getImagePath());
         } else {
             h.image.setImageResource(R.drawable.ic_default_background);
         }
@@ -88,7 +80,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.VH> {
         ConstraintLayout layout;
         VH(@NonNull View v) {
             super(v);
-            // ID ikut item_menu.xml yang kau bagi
+
             image = v.findViewById(R.id.menu_img);
             title = v.findViewById(R.id.menu_name_tv);
             price = v.findViewById(R.id.menu_price_tv);

@@ -120,7 +120,7 @@ public class ConfirmOrder extends AppCompatActivity {
         confirmOrderBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                makePayment(bankCode, 1);
+                makePayment(bankCode, getFinalPrice() + getTransactionFee());
             }
         });
 

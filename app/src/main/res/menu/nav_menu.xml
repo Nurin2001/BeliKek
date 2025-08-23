@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/shorts"
-        android:title="Cake"
+        android:id="@+id/catalogue_tab"
+        android:title="Catalog"
         android:icon="@drawable/ic_cake"
         />
 
@@ -14,7 +14,7 @@
         android:icon="@drawable/ic_home"/>
 
     <item
-        android:id="@+id/subscriptions"
+        android:id="@+id/profile_tab"
         android:title="Profile"
         android:icon="@drawable/ic_nav_profile" />
 

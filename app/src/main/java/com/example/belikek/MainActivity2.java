@@ -45,19 +45,18 @@ public class MainActivity2 extends AppCompatActivity {
             replace(new HomeFragment());
             if (bottomNav != null) bottomNav.setSelectedItemId(R.id.home);
         }
-Log.d("bottomnav isExist", String.valueOf(bottomNav != null));
+
         // 4) Handler tab bottom nav
         if (bottomNav != null) {
             bottomNav.setOnItemSelectedListener(item -> {
                 int id = item.getItemId();
-                if (id == R.id.home) {// tab "Cake"
+                if (id == R.id.home) {// tab "home"
                     replace(new HomeFragment());
                     return true;
-                } else if (id == R.id.shorts) {
-                    Log.d("menu tab", "menu tab");
-                    replace(new MenuFragment());           // tukar ke fragment sebenar nanti
+                } else if (id == R.id.catalogue_tab) { // tab "catalog"
+                    replace(new MenuFragment());
                     return true;
-                } else if (id == R.id.subscriptions) {
+                } else if (id == R.id.profile_tab) { // tab "profile"
                     startActivity(new Intent(MainActivity2.this, LoginOrSignup.class));
                 }
                 return false;
@@ -69,7 +68,6 @@ Log.d("bottomnav isExist", String.valueOf(bottomNav != null));
         }
     }
 
-    // >>> Terima FRAGMENT, bukan HomeFragment sahaja
     private void replace(@NonNull Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()

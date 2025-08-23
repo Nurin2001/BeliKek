@@ -60,9 +60,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.VH> {
     @Override
     public void onBindViewHolder(@NonNull VH h, int pos) {
         CategoryUI it = items.get(pos);
-        setImageByName(h.icon, "ic_" + it.getId());
+        String imgUrl = it.getImageUrl() != null ? it.getImageUrl() : null;
+        ImageLoader.imageLoader(h.itemView.getContext(), h.icon, imgUrl, true);
         h.label.setText(it.getLabel());
-        //mierza tukar
         h.layout.setSelected(pos == selected);
         h.layout.setOnClickListener(v -> {
             setSelected(pos);
@@ -70,22 +70,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.VH> {
                 listener.onItemClick(it, pos);
             }
         });
-    }
-
-    private void setImageByName(ImageView imageView, String imageName) {
-        try {
-            Log.d("image category", imageName);
-            int resourceId = context.getResources().getIdentifier(imageName, "drawable", context.getPackageName());
-            Log.d("resource id", String.valueOf(resourceId));
-            if (resourceId != 0) {
-                imageView.setImageResource(resourceId);
-            } else {
-                // Image not found, use default
-                imageView.setImageResource(R.drawable.ic_default_background);
-            }
-        } catch (Exception e) {
-            imageView.setImageResource(R.drawable.ic_default_background);
-        }
     }
 
     @Override public int getItemCount() { return items.size(); }

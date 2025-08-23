@@ -9,8 +9,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -56,12 +54,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
 
         // Replace 'imageView' with your actual ImageView variable name
         if (holder.itemImage != null) {
-            Glide.with(holder.itemView.getContext())
-                    .load(item.getImageUrl())
-                    .placeholder(R.drawable.ic_cookies) // Add a placeholder image
-                    .error(R.drawable.ic_cartoon) // Add an error image
-                    .centerCrop()
-                    .into(holder.itemImage);
+            ImageLoader.imageLoader(holder.itemView.getContext(), holder.itemImage, item.getImageUrl());
         } else {
             holder.itemImage.setImageResource(R.drawable.ic_default_background);
         }

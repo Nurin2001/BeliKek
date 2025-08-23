@@ -44,14 +44,10 @@ public class MenuFragment extends Fragment {
     private Button btnCheckout;
 
     private FirebaseFirestore db;
-
-    private static String FIRESTORE_CATEGORIES = "categories";
     private List<MenuItem>  menuItems;
-
     private double cartTotal = 0.0;
 
     // Keys utk result dari MenuDetails
-    public static final String EXTRA_TOTAL_DELTA = "extra_total_delta";
     public static final String EXTRA_CART_TOTAL  = "extra_cart_total";
     public static final String ORDERS_COLLECTION  = "orders";
 
@@ -61,10 +57,6 @@ public class MenuFragment extends Fragment {
                     result -> {
                         if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
                             Intent data = result.getData();
-
-                            // Cara biasa: tambah delta
-                            double delta = data.getDoubleExtra(EXTRA_TOTAL_DELTA, 0.0);
-                            if (delta != 0) cartTotal += delta;
 
                             // (Opsyen) override jumlah penuh
                             if (data.hasExtra(EXTRA_CART_TOTAL)) {
@@ -217,14 +209,15 @@ public class MenuFragment extends Fragment {
                                 String id = document.getString(ID_FIELD);
                                 Boolean isActive = document.getBoolean(IS_ACTIVE_FIELD);
                                 String name = document.getString(NAME_FIELD);
+                                String imageUrl = document.getString(IMAGE_URL_FIELD);
 
-                                category.add(new CategoryUI(id, name));
+                                category.add(new CategoryUI(id, name, imageUrl));
 
                                 // Alternative: Get all data as a Map
                                 Map<String, Object> data = document.getData();
                             }
                             categoryAdapter.submit(category);
-                            categoryAdapter.setSelected(1); // default pilih "4 INCH"
+                            categoryAdapter.setSelected(0); // default pilih "4 INCH"
                         } else {
                             Log.w("Firestore", "Error getting documents.", task.getException());
                         }
@@ -258,10 +251,10 @@ public class MenuFragment extends Fragment {
             if (documentSnapshot == null || !documentSnapshot.exists() || documentSnapshot.getData() == null) return list;
 
             String id = documentSnapshot.getId();
-            String name = documentSnapshot.getString(NAME_FIELD);
-            Double price = documentSnapshot.getDouble(PRICE_FIELD);
-            String imagePath = documentSnapshot.getString(IMAGE_URL_FIELD);
-            boolean hasCakeOptions = documentSnapshot.getBoolean(HAS_CAKE_OPTIONS_FIELD);
+            String name = documentSnapshot.getString(NAME_FIELD) != null ? documentSnapshot.getString(NAME_FIELD) : "Product Name";
+            Double price = documentSnapshot.getDouble(PRICE_FIELD) != null ? documentSnapshot.getDouble(PRICE_FIELD) : 0.00;
+            String imagePath = documentSnapshot.getString(IMAGE_URL_FIELD) != null ? documentSnapshot.getString(IMAGE_URL_FIELD) : "";
+            boolean hasCakeOptions = documentSnapshot.getBoolean(HAS_CAKE_OPTIONS_FIELD) != null ? documentSnapshot.getBoolean(HAS_CAKE_OPTIONS_FIELD) : false;
 
             list.add(new MenuItem(id, name, price, imagePath, hasCakeOptions));
         }

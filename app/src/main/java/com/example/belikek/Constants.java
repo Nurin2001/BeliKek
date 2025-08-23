@@ -20,6 +20,7 @@ public final class Constants {
     public static final String CATEGORIES_COLLECTION = "categories";
     public static final String ORDERS_COLLECTION = "orders";
     public static final String PRODUCTS_COLLECTION = "products";
+    public static final String PROMOTIONS_COLLECTION = "promotions";
 
     // ================================
     // DOCUMENT NAMES
